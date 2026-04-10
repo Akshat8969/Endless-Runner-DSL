@@ -1,17 +1,16 @@
-extends Area3D
+extends Control
 
 func _ready():
-	body_entered.connect(_on_body_entered)
+	var name = GameManager.player_name
+	var coins = GameManager.coins
+	var status = GameManager.status
 
-func _on_body_entered(body):
+	if status == "win":
+		$VBoxContainer/ResultText.text = "🏆 Well played, " + name + "!"
+	else:
+		$VBoxContainer/ResultText.text = "💀 Better luck next time, " + name + "!"
 
-	if not body.is_in_group("Player"):
-		return
+	$VBoxContainer/CoinsText.text = "Coins: " + str(coins)
 
-	print("🏁 YOU WIN!")
-	print("🪙 Total Coins Collected:", body.score)
-
-	body.velocity = Vector3.ZERO
-	body.set_physics_process(false)
-
-	get_tree().paused = true
+func _on_RestartButton_pressed():
+	get_tree().change_scene_to_file("res://StartScreen.tscn")

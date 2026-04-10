@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dpu3xt0tcp738" path="res://tracker_manager.gd" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://dj632lfj8ts8r" path="res://player.gd" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://bh5fqln07t4r4" path="res://models/END.glb" id="2_4c57u"]
-[ext_resource type="Script" uid="uid://4kigajohlkg" path="res://end.gd" id="3_efxa6"]
+[ext_resource type="Script" uid="uid://bemlhnlkll1gj" path="res://Finish.gd" id="3_4c57u"]
 [ext_resource type="PackedScene" uid="uid://co7rms4c8q0gf" path="res://models/run.glb" id="4_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://b3f7bf36q1unc" path="res://models/roll.glb" id="5_7mycd"]
 [ext_resource type="PackedScene" uid="uid://d0ww4bx6qu0hd" path="res://models/jump.glb" id="6_272bh"]
@@ -64,7 +64,7 @@ script = ExtResource("1_h2yge")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2013.5253, 0, 0)
 
 [node name="Area3D" type="Area3D" parent="END" unique_id=874510841]
-script = ExtResource("3_efxa6")
+script = ExtResource("3_4c57u")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="END/Area3D" unique_id=1473761196]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -792.2855, 0, 0)

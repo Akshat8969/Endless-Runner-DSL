@@ -38,7 +38,7 @@ var is_game_over := false
 var initial_speed_set := false
 
 # ========================
-# TIMERS (🔥 NEW SYSTEM)
+# TIMERS
 # ========================
 var speed_timer_node
 var reload_timer_node
@@ -56,53 +56,36 @@ const ANIM_ROLL = "Armature|mixamo_com|Layer0"
 # READY
 # ========================
 func _ready():
-	print("🔥 READY RUNNING")
-
 	anim.play(ANIM_RUN)
 	anim.speed_scale = 1.2
-	
 
 	load_config()
-
 	setup_timers()
 
 # ========================
-# SETUP TIMERS (🔥 KEY)
+# TIMERS
 # ========================
 func setup_timers():
-
-	# SPEED TIMER
 	speed_timer_node = Timer.new()
 	speed_timer_node.wait_time = speed_interval
-	speed_timer_node.one_shot = false
 	speed_timer_node.timeout.connect(_on_speed_tick)
 	add_child(speed_timer_node)
 	speed_timer_node.start()
 
-	# RELOAD TIMER
 	reload_timer_node = Timer.new()
 	reload_timer_node.wait_time = 5
-	reload_timer_node.one_shot = false
 	reload_timer_node.timeout.connect(_on_reload_tick)
 	add_child(reload_timer_node)
 	reload_timer_node.start()
 
-	print("🔥 TIMERS STARTED")
-
-# ========================
-# TIMER CALLBACKS
-# ========================
 func _on_speed_tick():
 	if is_game_over:
 		return
-	
 	forward_speed += speed_increase_amount
-	print("🚀 Speed:", forward_speed)
 
 func _on_reload_tick():
 	if is_game_over:
 		return
-	
 	load_config()
 
 # ========================
@@ -122,7 +105,6 @@ func _input(event):
 # PHYSICS
 # ========================
 func _physics_process(delta):
-
 	if is_game_over:
 		return
 
@@ -131,8 +113,7 @@ func _physics_process(delta):
 	else:
 		if is_jumping:
 			is_jumping = false
-			if not is_rolling:
-				anim.play(ANIM_RUN)
+			anim.play(ANIM_RUN)
 		velocity.y = 0
 
 	velocity.x = -forward_speed
@@ -141,7 +122,7 @@ func _physics_process(delta):
 	var direction_z = target_z - transform.origin.z
 	velocity.z = direction_z * lane_speed
 
-	if Input.is_action_just_pressed("ui_up") and is_on_floor() and not is_rolling:
+	if Input.is_action_just_pressed("ui_up") and is_on_floor():
 		velocity.y = jump_force
 		is_jumping = true
 		anim.play(ANIM_JUMP)
@@ -203,8 +184,11 @@ func game_over():
 
 	stop_all()
 
+	# 👉 ADD THIS (VERY IMPORTANT)
+	GameManager.end_game(false, score)
+
 # ========================
-# WIN GAME
+# WIN GAME (OPTIONAL)
 # ========================
 func win_game():
 	if is_game_over:
@@ -217,8 +201,10 @@ func win_game():
 
 	stop_all()
 
+	GameManager.end_game(true, score)
+
 # ========================
-# STOP EVERYTHING (🔥 FINAL FIX)
+# STOP EVERYTHING
 # ========================
 func stop_all():
 	if speed_timer_node:

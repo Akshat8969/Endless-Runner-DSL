@@ -1,0 +1,119 @@
+[gd_scene format=3 uid="uid://dkfbef6rm8iw4"]
+
+[ext_resource type="Script" uid="uid://dpu3xt0tcp738" path="res://tracker_manager.gd" id="1_h2yge"]
+[ext_resource type="Script" uid="uid://dj632lfj8ts8r" path="res://player.gd" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://co7rms4c8q0gf" path="res://models/run.glb" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://b3f7bf36q1unc" path="res://models/roll.glb" id="5_7mycd"]
+[ext_resource type="PackedScene" uid="uid://d0ww4bx6qu0hd" path="res://models/jump.glb" id="6_272bh"]
+[ext_resource type="Script" uid="uid://t4a18jgym0cr" path="res://train_col.gd" id="7_272bh"]
+[ext_resource type="PackedScene" uid="uid://bdwjl8eag6wey" path="res://Track1.glb" id="9_4c57u"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7mycd"]
+size = Vector3(500, 1, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_efxa6"]
+size = Vector3(500, 1, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5vw27"]
+size = Vector3(13.905, 5.27, 3.945)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_h2yge"]
+radius = 0.35
+height = 1.7
+
+[sub_resource type="Skin" id="Skin_1bvp3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h2yge"]
+
+[sub_resource type="Sky" id="Sky_1bvp3"]
+sky_material = SubResource("ProceduralSkyMaterial_h2yge")
+
+[sub_resource type="Environment" id="Environment_lquwl"]
+background_mode = 2
+sky = SubResource("Sky_1bvp3")
+ambient_light_source = 3
+ambient_light_energy = 0.8
+adjustment_enabled = true
+adjustment_contrast = 1.1
+adjustment_saturation = 1.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_272bh"]
+size = Vector3(12.54, 12.03, 4.615)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kek77"]
+size = Vector3(12.980703, 12.03, 4.615)
+
+[node name="Main" type="Node3D" unique_id=1134281598]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7235632)
+script = ExtResource("1_h2yge")
+
+[node name="Track1" parent="." unique_id=1635101492 instance=ExtResource("9_4c57u")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Track1" unique_id=2138043618]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track1/StaticBody3D" unique_id=2116670437]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -126.97379, 0, 0)
+shape = SubResource("BoxShape3D_7mycd")
+
+[node name="Track2" parent="." unique_id=649029206 instance=ExtResource("9_4c57u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -468.18707, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Track2" unique_id=643251004]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track2/StaticBody3D" unique_id=158974034]
+transform = Transform3D(0.999, 0, 0, 0, 0.999, 0, 0, 0, 0.999, -135.2234, 0, 0)
+shape = SubResource("BoxShape3D_efxa6")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Track2/StaticBody3D" unique_id=1194744697]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.587758, 4.411536, -5.365974)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="Player" type="CharacterBody3D" parent="." unique_id=21877902 groups=["Player"]]
+slide_on_ceiling = false
+script = ExtResource("2_0xm2m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1108665195]
+transform = Transform3D(3.14, 0, 0, 0, 3.14, 0, 0, 0, 3.14, 106.90679, 2.4058976, -0.8430042)
+shape = SubResource("CapsuleShape3D_h2yge")
+
+[node name="Camera3D" type="Camera3D" parent="Player" unique_id=1979248770]
+transform = Transform3D(-3.9610168e-08, -0.42290294, 0.90617496, -1.8485679e-08, 0.90617496, 0.42290294, -1, 0, -4.3711395e-08, 112.28552, 9.657913, -0.5)
+current = true
+
+[node name="run" parent="Player" unique_id=782222283 instance=ExtResource("4_1bvp3")]
+transform = Transform3D(-1.1474239e-07, 0, -2.625, 0, 2.625, 0, 2.625, 0, -1.1474239e-07, 106.22476, 0, -1.1422024)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player/run" unique_id=914726289]
+skin = SubResource("Skin_1bvp3")
+
+[node name="Skeleton3D" type="Skeleton3D" parent="Player/run" unique_id=1281950348]
+
+[node name="jump" parent="Player/run" unique_id=1665737899 instance=ExtResource("6_272bh")]
+transform = Transform3D(0.3809524, 0, 0, 0, 0.3809524, 0, 0, 0, 0.3809524, 0.5621985, 0, -8.549614)
+
+[node name="roll" parent="Player/run" unique_id=66643917 instance=ExtResource("5_7mycd")]
+physics_interpolation_mode = 1
+transform = Transform3D(1.0571429, 0, 0, 0, -4.620918e-08, 1.0571429, 0, -1.0571429, -4.620918e-08, 0.4696297, 0, -4.9196205)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1821513032]
+transform = Transform3D(0.8660254, -0.35355338, 0.35355338, 0, 0.70710677, 0.70710677, -0.5, -0.6123724, 0.6123724, 0, 0, 0)
+light_energy = 2.0
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1799857318]
+environment = SubResource("Environment_lquwl")
+
+[node name="train_spawner" type="Node3D" parent="." unique_id=1020220910 groups=["obstacle"]]
+script = ExtResource("7_272bh")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="train_spawner" unique_id=1052719718]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=2059303658]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.127722, 0, -5.8104362)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="Area3D" type="Area3D" parent="train_spawner/StaticBody3D" unique_id=111122946]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="train_spawner/StaticBody3D/Area3D" unique_id=632176491]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.523266, 0.6852727, -1.0955424)
+shape = SubResource("BoxShape3D_kek77")

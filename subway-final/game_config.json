@@ -1,0 +1,7 @@
+{
+    "speed": 30,
+    "speed_increase": {
+        "amount": 4,
+        "interval": 15
+    }
+}

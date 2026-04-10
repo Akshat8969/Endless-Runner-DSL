@@ -1,0 +1,2610 @@
+[gd_scene format=3 uid="uid://dkfbef6rm8iw4"]
+
+[ext_resource type="Script" uid="uid://dpu3xt0tcp738" path="res://tracker_manager.gd" id="1_h2yge"]
+[ext_resource type="Script" uid="uid://dj632lfj8ts8r" path="res://player.gd" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://bh5fqln07t4r4" path="res://models/END.glb" id="2_4c57u"]
+[ext_resource type="Script" uid="uid://4kigajohlkg" path="res://end.gd" id="3_efxa6"]
+[ext_resource type="PackedScene" uid="uid://co7rms4c8q0gf" path="res://models/run.glb" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://b3f7bf36q1unc" path="res://models/roll.glb" id="5_7mycd"]
+[ext_resource type="PackedScene" uid="uid://d0ww4bx6qu0hd" path="res://models/jump.glb" id="6_272bh"]
+[ext_resource type="Script" uid="uid://t4a18jgym0cr" path="res://train_col.gd" id="7_272bh"]
+[ext_resource type="Script" uid="uid://csemtonm62r4n" path="res://coin.gd" id="8_5vw27"]
+[ext_resource type="PackedScene" uid="uid://bdwjl8eag6wey" path="res://Track1.glb" id="9_4c57u"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dg77c"]
+size = Vector3(4.18, 27.81, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4c57u"]
+size = Vector3(81.31, 1, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7mycd"]
+size = Vector3(500, 1, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_efxa6"]
+size = Vector3(500, 1, 40)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_h2yge"]
+radius = 0.35
+height = 1.7
+
+[sub_resource type="Skin" id="Skin_1bvp3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h2yge"]
+
+[sub_resource type="Sky" id="Sky_1bvp3"]
+sky_material = SubResource("ProceduralSkyMaterial_h2yge")
+
+[sub_resource type="Environment" id="Environment_lquwl"]
+background_mode = 2
+sky = SubResource("Sky_1bvp3")
+ambient_light_source = 3
+ambient_light_energy = 0.8
+adjustment_enabled = true
+adjustment_contrast = 1.1
+adjustment_saturation = 1.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_272bh"]
+size = Vector3(12.54, 12.03, 4.615)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kek77"]
+size = Vector3(12.980703, 12.03, 4.615)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5vw27"]
+size = Vector3(83.035, 7.87, 11.86)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_272bh"]
+height = 1.963
+radius = 1.8
+
+[node name="Main" type="Node3D" unique_id=1134281598]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7235632)
+script = ExtResource("1_h2yge")
+
+[node name="END" parent="." unique_id=466208010 instance=ExtResource("2_4c57u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2013.5253, 0, 0)
+
+[node name="Area3D" type="Area3D" parent="END" unique_id=874510841]
+script = ExtResource("3_efxa6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="END/Area3D" unique_id=1473761196]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -792.2855, 0, 0)
+shape = SubResource("BoxShape3D_dg77c")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="END" unique_id=210842907]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="END/StaticBody3D" unique_id=1949120974]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -751.6017, 0, 0)
+shape = SubResource("BoxShape3D_4c57u")
+
+[node name="Track1" parent="." unique_id=1635101492 instance=ExtResource("9_4c57u")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Track1" unique_id=557595308]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track1/StaticBody3D" unique_id=2116670437]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -126.97379, 0, 0)
+shape = SubResource("BoxShape3D_7mycd")
+
+[node name="Track2" parent="." unique_id=649029206 instance=ExtResource("9_4c57u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -472.47134, -0.00223732, -0.04611373)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Track2" unique_id=1001862140]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track2/StaticBody3D" unique_id=158974034]
+transform = Transform3D(0.999, 0, 0, 0, 0.999, 0, 0, 0, 0.999, -135.2234, 0, 0)
+shape = SubResource("BoxShape3D_efxa6")
+
+[node name="Player" type="CharacterBody3D" parent="." unique_id=21877902 groups=["Player"]]
+collision_mask = 3
+slide_on_ceiling = false
+script = ExtResource("2_0xm2m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1108665195]
+transform = Transform3D(3.14, 0, 0, 0, 3.14, 0, 0, 0, 3.14, 106.90679, 2.4058976, -0.8430042)
+shape = SubResource("CapsuleShape3D_h2yge")
+
+[node name="Camera3D" type="Camera3D" parent="Player" unique_id=1979248770]
+transform = Transform3D(-3.9610168e-08, -0.42290294, 0.90617496, -1.8485679e-08, 0.90617496, 0.42290294, -1, 0, -4.3711395e-08, 112.28552, 9.657913, -0.5)
+current = true
+
+[node name="run" parent="Player" unique_id=782222283 instance=ExtResource("4_1bvp3")]
+transform = Transform3D(-1.1474239e-07, 0, -2.625, 0, 2.625, 0, 2.625, 0, -1.1474239e-07, 106.22476, 0, -1.1422024)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player/run" unique_id=914726289]
+skin = SubResource("Skin_1bvp3")
+
+[node name="Skeleton3D" type="Skeleton3D" parent="Player/run" unique_id=1281950348]
+
+[node name="jump" parent="Player/run" unique_id=1665737899 instance=ExtResource("6_272bh")]
+transform = Transform3D(0.3809524, 0, 0, 0, 0.3809524, 0, 0, 0, 0.3809524, 0.5621985, 0, -8.549614)
+
+[node name="roll" parent="Player/run" unique_id=66643917 instance=ExtResource("5_7mycd")]
+physics_interpolation_mode = 1
+transform = Transform3D(1.0571429, 0, 0, 0, -4.620918e-08, 1.0571429, 0, -1.0571429, -4.620918e-08, 0.4696297, 0, -4.9196205)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1821513032]
+transform = Transform3D(0.8660254, -0.35355338, 0.35355338, 0, 0.70710677, 0.70710677, -0.5, -0.6123724, 0.6123724, 0, 0, 0)
+light_energy = 2.0
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1799857318]
+environment = SubResource("Environment_lquwl")
+
+[node name="train_spawner" type="Node3D" parent="." unique_id=1020220910 groups=["obstacle"]]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="train_spawner" unique_id=1052719718 groups=["train"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=2059303658]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.127722, 0, -6.095117)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=898415909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.629307, 0, -5.8104362)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1033693570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.610466, 0, -1.2482285)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=665052874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.793497, 0, -1.2482285)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=298136923]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.206535, 0, 3.4301248)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D8" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1398283762]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.206535, 0, -5.915918)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D9" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=644904724]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -103.818634, 0, -5.915918)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D10" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=2021199681]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -103.53862, 0, 3.642714)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D11" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=882540421]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -405.57043, 0, -0.98331213)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D12" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1741691918]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -436.3016, 0, -6.3254275)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D14" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1605486694]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -479.22656, 0, -6.3254275)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D15" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1479650880]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -478.8627, 0, 3.4104934)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D17" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1264119337]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -532.64374, 0, 3.4104934)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D20" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=681535606]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -576.1704, 0, 3.4104934)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D18" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=129624427]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -532.50256, 0, -5.6558766)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D19" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=2009817988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -576.4924, 0, -5.6558766)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D13" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1194442548]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -436.10712, 0, -1.0507674)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D16" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1573308529]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -502.53738, 0, -1.0507674)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1831489352]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 67.61512, 1.4889317, -1.2482285)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=775641051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.551609, 1.4889317, 3.8295445)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="Area3D" type="Area3D" parent="train_spawner/StaticBody3D" unique_id=111122946]
+script = ExtResource("7_272bh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="train_spawner/StaticBody3D/Area3D" unique_id=632176491]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.523266, 0.6852727, 56.01513)
+shape = SubResource("BoxShape3D_kek77")
+
+[node name="CollisionShape3D21" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1477390929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -159.29291, 0, -11.865675)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D22" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=2073935678]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -159.29291, 0, 8.917395)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D23" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=379984691]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -323.1593, 0, 8.917395)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D24" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=437756188]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -323.1593, 0, -11.888809)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D25" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1595810201]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -630.8283, 0, -11.888809)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D26" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1494514548]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -631.37366, 0, 8.828089)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D27" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1856769215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -795.4186, 0, 9.339289)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D28" type="CollisionShape3D" parent="train_spawner/StaticBody3D" unique_id=1022596060]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -795.4186, 0, -11.762789)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=126558656 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1983190456]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 74.19565, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D2" type="Area3D" parent="." unique_id=1824466263 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D2" unique_id=1071602813]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 74.71648, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D3" type="Area3D" parent="." unique_id=700616684 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D3" unique_id=692726823]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 69.45088, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D4" type="Area3D" parent="." unique_id=874433442 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D4" unique_id=511725449]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 63.74759, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D5" type="Area3D" parent="." unique_id=82829864 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D5" unique_id=459615827]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 30.297417, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D6" type="Area3D" parent="." unique_id=1200674130 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D6" unique_id=1456246528]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 25.017956, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D7" type="Area3D" parent="." unique_id=1787171162 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D7" unique_id=1230308707]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 19.162687, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D8" type="Area3D" parent="." unique_id=1250660431 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D8" unique_id=887685833]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 14.110441, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D9" type="Area3D" parent="." unique_id=950886140 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D9" unique_id=1778002544]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 3.1130896, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D10" type="Area3D" parent="." unique_id=1848559487 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D10" unique_id=183846185]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -2.672433, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D11" type="Area3D" parent="." unique_id=2099095146 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D11" unique_id=1904964810]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -8.102419, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D12" type="Area3D" parent="." unique_id=1500185783 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D12" unique_id=595038689]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -13.591957, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D13" type="Area3D" parent="." unique_id=1613164611 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D13" unique_id=821159001]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -64.28912, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D19" type="Area3D" parent="." unique_id=341166286 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D19" unique_id=972011167]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -69.91452, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D20" type="Area3D" parent="." unique_id=2077727159 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D20" unique_id=2142819294]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -75.664566, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D21" type="Area3D" parent="." unique_id=1270070499 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D21" unique_id=1757156684]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -81.135635, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D22" type="Area3D" parent="." unique_id=995383185 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D22" unique_id=1211525032]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -86.58391, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D23" type="Area3D" parent="." unique_id=826399649 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D23" unique_id=1347133360]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -217.61122, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D32" type="Area3D" parent="." unique_id=1226971812 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D32" unique_id=390882557]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -223.28624, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D33" type="Area3D" parent="." unique_id=1909700741 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D33" unique_id=580617685]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -228.99275, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D34" type="Area3D" parent="." unique_id=1825231541 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D34" unique_id=1228247808]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -240.3598, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D35" type="Area3D" parent="." unique_id=1117460330 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D35" unique_id=1979700679]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -245.97217, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D36" type="Area3D" parent="." unique_id=1986031883 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D36" unique_id=1739890300]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -251.77841, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D37" type="Area3D" parent="." unique_id=505309455 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D37" unique_id=712413081]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -257.54288, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D38" type="Area3D" parent="." unique_id=269696353 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D38" unique_id=1311498844]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -391.60562, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D39" type="Area3D" parent="." unique_id=1919287708 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D39" unique_id=505322825]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -397.7283, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D40" type="Area3D" parent="." unique_id=208906504 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D40" unique_id=1837830959]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -403.2136, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D41" type="Area3D" parent="." unique_id=573077579 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D41" unique_id=648222288]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -408.72147, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D42" type="Area3D" parent="." unique_id=1973752352 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D42" unique_id=693080961]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -441.9471, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D43" type="Area3D" parent="." unique_id=556019612 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D43" unique_id=1428049528]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -447.32, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D44" type="Area3D" parent="." unique_id=236334192 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D44" unique_id=927642838]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -452.91437, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D45" type="Area3D" parent="." unique_id=1807629705 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D45" unique_id=69773378]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -458.4426, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D50" type="Area3D" parent="." unique_id=559491340 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D50" unique_id=1570390283]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -536.70795, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D56" type="Area3D" parent="." unique_id=2123264161 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D56" unique_id=1635708315]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -542.23456, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D57" type="Area3D" parent="." unique_id=705077841 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D57" unique_id=69704359]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -547.50555, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D58" type="Area3D" parent="." unique_id=2127438931 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D58" unique_id=118160785]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -553.636, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D59" type="Area3D" parent="." unique_id=1730471762 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D59" unique_id=2082002789]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -558.9112, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D55" type="Area3D" parent="." unique_id=188095378 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D55" unique_id=1291349785]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -536.7128, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D51" type="Area3D" parent="." unique_id=2068818896 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D51" unique_id=2014228064]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -542.63763, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D52" type="Area3D" parent="." unique_id=1353119497 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D52" unique_id=1996865804]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -548.31683, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D53" type="Area3D" parent="." unique_id=1241197555 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D53" unique_id=1135729487]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -554.0584, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D54" type="Area3D" parent="." unique_id=2000024882 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D54" unique_id=1313619497]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -558.7592, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D60" type="Area3D" parent="." unique_id=1646182079 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D60" unique_id=1344299778]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -690.30304, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D61" type="Area3D" parent="." unique_id=672943184 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D61" unique_id=1082519999]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -695.823, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D62" type="Area3D" parent="." unique_id=1609922006 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D62" unique_id=1107207205]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -701.5708, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D63" type="Area3D" parent="." unique_id=1049961801 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D63" unique_id=392678473]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -706.7913, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D64" type="Area3D" parent="." unique_id=1178275824 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D64" unique_id=2017377483]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -712.80334, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D65" type="Area3D" parent="." unique_id=98163793 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D65" unique_id=283324965]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -718.5846, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D66" type="Area3D" parent="." unique_id=729600081 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D66" unique_id=711491178]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -724.01056, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D67" type="Area3D" parent="." unique_id=2111188144 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D67" unique_id=1435216276]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -729.9667, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D68" type="Area3D" parent="." unique_id=1834965912 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D68" unique_id=290286909]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -729.9667, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D69" type="Area3D" parent="." unique_id=484055487 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D69" unique_id=512536342]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -723.8081, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D70" type="Area3D" parent="." unique_id=2015191053 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D70" unique_id=79480022]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -718.585, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D71" type="Area3D" parent="." unique_id=2036442647 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D71" unique_id=362910736]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -712.6505, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D72" type="Area3D" parent="." unique_id=571006186 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D72" unique_id=950622905]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -707.05286, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D73" type="Area3D" parent="." unique_id=1615811641 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D73" unique_id=826010202]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -701.1159, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D74" type="Area3D" parent="." unique_id=1525053969 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D74" unique_id=1952265184]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -695.54663, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D75" type="Area3D" parent="." unique_id=1322186911 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D75" unique_id=417438388]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -695.54663, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D76" type="Area3D" parent="." unique_id=1426482425 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D76" unique_id=1657312093]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -688.4844, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D46" type="Area3D" parent="." unique_id=958338753 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D46" unique_id=752160082]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -469.4602, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D47" type="Area3D" parent="." unique_id=1783261432 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D47" unique_id=1277483504]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -475.0992, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D48" type="Area3D" parent="." unique_id=834133185 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D48" unique_id=660979974]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -480.92905, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D49" type="Area3D" parent="." unique_id=1090672342 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D49" unique_id=334692368]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -485.97858, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D31" type="Area3D" parent="." unique_id=2025931528 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D31" unique_id=601430768]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -217.61122, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D24" type="Area3D" parent="." unique_id=497360929 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D24" unique_id=807352686]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -223.24084, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D25" type="Area3D" parent="." unique_id=1744810201 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D25" unique_id=386486737]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -229.06837, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D26" type="Area3D" parent="." unique_id=2035251700 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D26" unique_id=1680897758]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -234.95708, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D27" type="Area3D" parent="." unique_id=1270407353 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D27" unique_id=2052305292]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -239.82333, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D28" type="Area3D" parent="." unique_id=807181936 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D28" unique_id=380163819]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -246.46693, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D29" type="Area3D" parent="." unique_id=1619174852 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D29" unique_id=1282637928]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -251.71887, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D30" type="Area3D" parent="." unique_id=1754026336 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D30" unique_id=744444521]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -256.99582, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D18" type="Area3D" parent="." unique_id=1943031862 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D18" unique_id=1090903547]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -64.28912, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D14" type="Area3D" parent="." unique_id=1217376315 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D14" unique_id=349550891]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -69.79027, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D15" type="Area3D" parent="." unique_id=290199898 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D15" unique_id=835839336]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -75.7731, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D16" type="Area3D" parent="." unique_id=323476829 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D16" unique_id=1145273546]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -80.91411, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D17" type="Area3D" parent="." unique_id=124013712 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5052834, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D17" unique_id=1549930731]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -86.539825, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Track3" parent="." unique_id=647559370 instance=ExtResource("9_4c57u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -943.1468, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Track3" unique_id=674887315]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track3/StaticBody3D" unique_id=1095291699]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -126.97379, 0, 0)
+shape = SubResource("BoxShape3D_7mycd")
+
+[node name="Track4" parent="." unique_id=458481094 instance=ExtResource("9_4c57u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1415.6182, -0.00223732, -0.04611373)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Track4" unique_id=1998290237]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track4/StaticBody3D" unique_id=58816820]
+transform = Transform3D(0.999, 0, 0, 0, 0.999, 0, 0, 0, 0.999, -135.2234, 0, 0)
+shape = SubResource("BoxShape3D_efxa6")
+
+[node name="train_spawner2" type="Node3D" parent="." unique_id=431383940 groups=["obstacle"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -943.1468, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="train_spawner2" unique_id=738472913 groups=["train"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=264346750]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.127722, 0, -6.095117)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=979626066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.629307, 0, -5.8104362)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=1586635531]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.610466, 0, -1.2482285)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=887955566]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.793497, 0, -1.2482285)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=914293837]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.206535, 0, 3.4301248)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D8" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=1555219536]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.206535, 0, -5.915918)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D9" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=381234120]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -103.818634, 0, -5.915918)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D10" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=1919880396]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -103.53862, 0, 3.642714)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D11" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=186853655]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -405.57043, 0, -0.98331213)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D12" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=761057331]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -436.3016, 0, -6.3254275)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D14" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=44075308]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -479.22656, 0, -6.3254275)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D15" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=87322355]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -478.8627, 0, 3.4104934)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D17" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=1853193845]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -532.64374, 0, 3.4104934)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D20" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=1545921455]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -576.1704, 0, 3.4104934)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D18" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=182787309]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -532.50256, 0, -5.6558766)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D19" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=529891583]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -576.4924, 0, -5.6558766)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D13" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=83645585]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -436.10712, 0, -1.0507674)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D16" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=13668060]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -502.53738, 0, -1.0507674)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=41855119]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 67.61512, 1.4889317, -1.2482285)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=733334001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.551609, 1.4889317, 3.8295445)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="Area3D" type="Area3D" parent="train_spawner2/StaticBody3D" unique_id=697552319]
+script = ExtResource("7_272bh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="train_spawner2/StaticBody3D/Area3D" unique_id=907381168]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.523266, 0.6852727, 56.01513)
+shape = SubResource("BoxShape3D_kek77")
+
+[node name="CollisionShape3D21" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=793024903]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -159.29291, 0, -11.865675)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D22" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=56960583]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -159.29291, 0, 8.917395)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D23" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=23717850]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -323.1593, 0, 8.917395)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D24" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=336014325]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -323.1593, 0, -11.888809)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D25" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=1671297628]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -630.8283, 0, -11.888809)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D26" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=653125112]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -631.37366, 0, 8.828089)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D27" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=895621682]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -795.4186, 0, 9.339289)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D28" type="CollisionShape3D" parent="train_spawner2/StaticBody3D" unique_id=491888636]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -795.4186, 0, -11.762789)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="Area3D77" type="Area3D" parent="." unique_id=1432506600 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -943.1468, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D77" unique_id=1671200409]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 74.19565, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D78" type="Area3D" parent="." unique_id=1655274826 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D78" unique_id=644583751]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 74.71648, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D79" type="Area3D" parent="." unique_id=1262861414 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D79" unique_id=60877984]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 69.45088, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D80" type="Area3D" parent="." unique_id=1567442178 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D80" unique_id=847296157]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 63.74759, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D81" type="Area3D" parent="." unique_id=289728928 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D81" unique_id=888934411]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 30.297417, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D82" type="Area3D" parent="." unique_id=1883868904 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D82" unique_id=1284197799]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 25.017956, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D83" type="Area3D" parent="." unique_id=247899821 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D83" unique_id=1313770372]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 19.162687, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D84" type="Area3D" parent="." unique_id=2128736280 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D84" unique_id=719860586]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 14.110441, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D85" type="Area3D" parent="." unique_id=2053202329 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D85" unique_id=856504076]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 3.1130896, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D86" type="Area3D" parent="." unique_id=2086109259 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D86" unique_id=1812729107]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -2.672433, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D87" type="Area3D" parent="." unique_id=393060574 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D87" unique_id=1114416431]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -8.102419, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D88" type="Area3D" parent="." unique_id=2027859249 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D88" unique_id=1181595319]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -13.591957, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D89" type="Area3D" parent="." unique_id=528175383 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D89" unique_id=613109414]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -64.28912, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D90" type="Area3D" parent="." unique_id=1823784514 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D90" unique_id=1743000897]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -69.91452, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D91" type="Area3D" parent="." unique_id=901057664 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D91" unique_id=1782176138]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -75.664566, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D92" type="Area3D" parent="." unique_id=1157702550 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D92" unique_id=123112743]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -81.135635, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D93" type="Area3D" parent="." unique_id=132424395 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D93" unique_id=1802102385]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -86.58391, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D94" type="Area3D" parent="." unique_id=884755734 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D94" unique_id=1455062353]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -217.61122, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D95" type="Area3D" parent="." unique_id=1194165495 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D95" unique_id=903505604]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -223.28624, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D96" type="Area3D" parent="." unique_id=438866979 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D96" unique_id=2028419810]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -228.99275, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D97" type="Area3D" parent="." unique_id=520918066 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D97" unique_id=802305608]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -240.3598, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D229" type="Area3D" parent="." unique_id=60605054 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D229" unique_id=957035706]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -234.76819, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D98" type="Area3D" parent="." unique_id=1858867243 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D98" unique_id=73838044]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -245.97217, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D99" type="Area3D" parent="." unique_id=319382756 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D99" unique_id=1933328817]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -251.77841, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D100" type="Area3D" parent="." unique_id=542748439 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D100" unique_id=806163482]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -257.54288, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D101" type="Area3D" parent="." unique_id=566897537 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D101" unique_id=966461376]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -391.60562, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D102" type="Area3D" parent="." unique_id=1481849573 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D102" unique_id=1748132882]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -397.7283, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D103" type="Area3D" parent="." unique_id=1828103556 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D103" unique_id=1497205682]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -403.2136, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D104" type="Area3D" parent="." unique_id=1482906521 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D104" unique_id=73175812]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -408.72147, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D105" type="Area3D" parent="." unique_id=1064769480 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D105" unique_id=373794088]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -441.9471, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D106" type="Area3D" parent="." unique_id=561103594 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D106" unique_id=1123092422]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -447.32, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D107" type="Area3D" parent="." unique_id=2092256580 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D107" unique_id=260287112]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -452.91437, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D108" type="Area3D" parent="." unique_id=962962441 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D108" unique_id=477377169]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -458.4426, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D109" type="Area3D" parent="." unique_id=413290782 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D109" unique_id=1143192117]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -536.70795, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D110" type="Area3D" parent="." unique_id=1054703541 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D110" unique_id=1111304466]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -542.23456, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D111" type="Area3D" parent="." unique_id=896628765 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D111" unique_id=1400492970]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -547.50555, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D112" type="Area3D" parent="." unique_id=119260669 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D112" unique_id=259329970]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -553.636, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D113" type="Area3D" parent="." unique_id=1859503595 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D113" unique_id=2021971852]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -558.9112, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D114" type="Area3D" parent="." unique_id=880459734 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D114" unique_id=993237280]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -536.7128, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D115" type="Area3D" parent="." unique_id=1836448935 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D115" unique_id=584557710]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -542.63763, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D116" type="Area3D" parent="." unique_id=1401340372 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D116" unique_id=421793088]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -548.31683, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D117" type="Area3D" parent="." unique_id=1682743559 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D117" unique_id=652336317]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -554.0584, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D118" type="Area3D" parent="." unique_id=1446667381 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D118" unique_id=1815527948]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -558.7592, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D119" type="Area3D" parent="." unique_id=879328003 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D119" unique_id=515592681]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -690.30304, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D120" type="Area3D" parent="." unique_id=1402074083 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D120" unique_id=1644811233]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -695.823, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D121" type="Area3D" parent="." unique_id=573931253 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D121" unique_id=462188310]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -701.5708, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D122" type="Area3D" parent="." unique_id=1530094985 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D122" unique_id=1114317056]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -706.7913, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D123" type="Area3D" parent="." unique_id=1168156581 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D123" unique_id=351706470]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -712.80334, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D124" type="Area3D" parent="." unique_id=922864035 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D124" unique_id=492454377]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -718.5846, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D125" type="Area3D" parent="." unique_id=9260261 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D125" unique_id=907544723]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -724.01056, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D126" type="Area3D" parent="." unique_id=1812621814 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D126" unique_id=1012266318]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -729.9667, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D127" type="Area3D" parent="." unique_id=1441996321 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D127" unique_id=180114135]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -729.9667, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D128" type="Area3D" parent="." unique_id=1412302768 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D128" unique_id=1715803182]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -723.8081, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D129" type="Area3D" parent="." unique_id=393176624 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D129" unique_id=1526119908]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -718.585, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D130" type="Area3D" parent="." unique_id=452989217 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D130" unique_id=1977913646]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -712.6505, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D131" type="Area3D" parent="." unique_id=1360723703 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D131" unique_id=49450003]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -707.05286, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D132" type="Area3D" parent="." unique_id=2088472209 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D132" unique_id=626141401]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -701.1159, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D133" type="Area3D" parent="." unique_id=6235503 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D133" unique_id=1452222665]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -695.54663, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D134" type="Area3D" parent="." unique_id=282198140 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D134" unique_id=114821143]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -695.54663, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D135" type="Area3D" parent="." unique_id=75165985 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D135" unique_id=220229580]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -689.87024, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D136" type="Area3D" parent="." unique_id=1866262410 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D136" unique_id=579908727]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -469.4602, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D137" type="Area3D" parent="." unique_id=936291029 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D137" unique_id=479961611]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -475.0992, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D138" type="Area3D" parent="." unique_id=139807870 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D138" unique_id=997421994]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -480.92905, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D139" type="Area3D" parent="." unique_id=1388186040 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D139" unique_id=1115809279]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -485.97858, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D140" type="Area3D" parent="." unique_id=1918256260 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D140" unique_id=1804138960]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -217.61122, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D141" type="Area3D" parent="." unique_id=446357650 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D141" unique_id=1359108017]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -223.24084, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D142" type="Area3D" parent="." unique_id=1953289070 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D142" unique_id=501932728]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -229.06837, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D143" type="Area3D" parent="." unique_id=2109398575 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D143" unique_id=1225742879]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -234.95708, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D144" type="Area3D" parent="." unique_id=295704959 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D144" unique_id=409983257]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -239.82333, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D145" type="Area3D" parent="." unique_id=1479109798 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D145" unique_id=1179120409]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -246.46693, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D146" type="Area3D" parent="." unique_id=1154872010 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D146" unique_id=1393501339]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -251.71887, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D147" type="Area3D" parent="." unique_id=219269069 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D147" unique_id=905621758]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -256.99582, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D148" type="Area3D" parent="." unique_id=1410470121 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D148" unique_id=1358010153]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -64.28912, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D149" type="Area3D" parent="." unique_id=874684902 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D149" unique_id=1834380105]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -69.79027, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D150" type="Area3D" parent="." unique_id=942244463 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D150" unique_id=806435590]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -75.7731, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D151" type="Area3D" parent="." unique_id=866577319 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D151" unique_id=167908269]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -80.91411, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D152" type="Area3D" parent="." unique_id=1108908152 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -949.6521, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D152" unique_id=540075936]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -86.539825, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Track5" parent="." unique_id=98789170 instance=ExtResource("9_4c57u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1888.9907, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Track5" unique_id=544884786]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track5/StaticBody3D" unique_id=584747175]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -126.97379, 0, 0)
+shape = SubResource("BoxShape3D_7mycd")
+
+[node name="Track6" parent="." unique_id=1010300091 instance=ExtResource("9_4c57u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2362.0225, -0.026970863, -0.10137057)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Track6" unique_id=635645029]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Track6/StaticBody3D" unique_id=2017345580]
+transform = Transform3D(0.999, 0, 0, 0, 0.999, 0, 0, 0, 0.999, -135.2234, 0, 0)
+shape = SubResource("BoxShape3D_efxa6")
+
+[node name="train_spawner3" type="Node3D" parent="." unique_id=1695301416 groups=["obstacle"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1886.4445, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="train_spawner3" unique_id=945026523 groups=["train"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1007354479]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.875244, 0, -6.095117)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1667092698]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.464233, 0, -5.8104362)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1032337842]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.445435, 0, -1.2482285)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1372955383]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.211548, 0, -1.2482285)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1555901781]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -63.35901, 0, 3.4301248)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D8" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=58341740]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -63.35901, 0, -5.915918)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D9" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=626031589]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -106.43945, 0, -5.915918)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D10" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1166383124]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -106.159424, 0, 3.642714)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D11" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1902067612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -408.35364, 0, -0.98331213)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D12" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=531476737]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -439.69446, 0, -6.3254275)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D14" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=250971801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -482.75134, 0, -6.3254275)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D15" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=511767729]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -482.38757, 0, 3.4104934)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D17" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1661329732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -536.4999, 0, 3.4104934)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D20" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1760159146]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -579.0065, 0, 3.4104934)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D18" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1618547572]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -536.35876, 0, -5.6558766)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D19" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1909314893]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -579.3285, 0, -5.6558766)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D13" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1658759319]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -439.49988, 0, -1.0507674)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D16" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=68725096]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -506.6195, 0, -1.0507674)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=733560449]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64.64636, 1.4889317, -1.2482285)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=126091150]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.491211, 1.4889317, 3.8295445)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="Area3D" type="Area3D" parent="train_spawner3/StaticBody3D" unique_id=1437922795]
+script = ExtResource("7_272bh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="train_spawner3/StaticBody3D/Area3D" unique_id=750062147]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.523266, 0.6852727, 56.01513)
+shape = SubResource("BoxShape3D_kek77")
+
+[node name="CollisionShape3D21" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1104855355]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -159.29291, 0, -11.865675)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D22" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=438020980]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -159.29291, 0, 8.917395)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D23" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1259820671]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -323.1593, 0, 8.917395)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D24" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=384817690]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -323.1593, 0, -11.888809)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D25" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=550950169]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -630.8283, 0, -11.888809)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D26" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1764068211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -631.37366, 0, 8.828089)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D27" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=163750896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -795.4186, 0, 9.339289)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="CollisionShape3D28" type="CollisionShape3D" parent="train_spawner3/StaticBody3D" unique_id=1257828260]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -795.4186, 0, -11.762789)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="Area3D153" type="Area3D" parent="." unique_id=55903444 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1886.4445, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D153" unique_id=227121230]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 71.846924, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D154" type="Area3D" parent="." unique_id=868268593 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D154" unique_id=1972463134]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 72.402954, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D155" type="Area3D" parent="." unique_id=2126256114 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D155" unique_id=1411730012]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 66.70569, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D156" type="Area3D" parent="." unique_id=1290688260 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D156" unique_id=1273214071]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 61.263916, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D157" type="Area3D" parent="." unique_id=1065261375 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D157" unique_id=1649373378]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 30.297417, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D158" type="Area3D" parent="." unique_id=818261427 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D158" unique_id=245901223]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 25.017956, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D159" type="Area3D" parent="." unique_id=1312562996 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D159" unique_id=1934719837]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 19.162687, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D160" type="Area3D" parent="." unique_id=71799975 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D160" unique_id=1847013135]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 14.110441, 2.9446564, 4.1114917)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D161" type="Area3D" parent="." unique_id=214037049 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D161" unique_id=168328246]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 0.560791, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D162" type="Area3D" parent="." unique_id=173214025 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D162" unique_id=1181303705]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -4.774658, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D163" type="Area3D" parent="." unique_id=1630331304 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D163" unique_id=701767355]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -11.03479, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D164" type="Area3D" parent="." unique_id=1707942798 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D164" unique_id=1160323221]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -16.076416, 2.9446564, -0.62973547)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D165" type="Area3D" parent="." unique_id=1973522642 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D165" unique_id=110600499]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -66.837524, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D166" type="Area3D" parent="." unique_id=1711824207 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D166" unique_id=485151409]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -72.23303, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D167" type="Area3D" parent="." unique_id=1383808831 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D167" unique_id=1867270339]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -77.663574, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D168" type="Area3D" parent="." unique_id=2112284962 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D168" unique_id=96424133]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -83.38025, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D169" type="Area3D" parent="." unique_id=82183149 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D169" unique_id=522668301]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -89.20581, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D170" type="Area3D" parent="." unique_id=732326645 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D170" unique_id=345347818]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -220.0791, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D171" type="Area3D" parent="." unique_id=2147056827 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D171" unique_id=1933522407]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -226.57251, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D172" type="Area3D" parent="." unique_id=1025902223 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D172" unique_id=978781438]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -231.83545, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D173" type="Area3D" parent="." unique_id=976272343 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D173" unique_id=459208297]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -242.41211, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D230" type="Area3D" parent="." unique_id=392602063 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D230" unique_id=826309973]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -236.72852, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D174" type="Area3D" parent="." unique_id=1521190361 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D174" unique_id=97152001]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -248.15503, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D175" type="Area3D" parent="." unique_id=381703999 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D175" unique_id=1491228807]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -254.90527, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D176" type="Area3D" parent="." unique_id=1762759872 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D176" unique_id=877005706]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -261.14404, 2.9446564, 4.6726956)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D177" type="Area3D" parent="." unique_id=1107665654 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D177" unique_id=31520683]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -394.6416, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D178" type="Area3D" parent="." unique_id=294888505 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D178" unique_id=612777962]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -399.9309, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D179" type="Area3D" parent="." unique_id=1232085473 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D179" unique_id=1569444789]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -405.54224, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D180" type="Area3D" parent="." unique_id=2020181154 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D180" unique_id=1201450751]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -411.4026, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D181" type="Area3D" parent="." unique_id=1521857117 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D181" unique_id=8611892]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -444.84692, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D182" type="Area3D" parent="." unique_id=811204512 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D182" unique_id=5577292]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -450.21997, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D183" type="Area3D" parent="." unique_id=1935806720 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D183" unique_id=1948179983]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -455.8374, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D184" type="Area3D" parent="." unique_id=2002836558 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D184" unique_id=1071104009]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -461.27246, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D185" type="Area3D" parent="." unique_id=927004197 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D185" unique_id=1155092457]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -539.8513, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D186" type="Area3D" parent="." unique_id=1167210691 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D186" unique_id=439318573]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -545.28564, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D187" type="Area3D" parent="." unique_id=502586062 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D187" unique_id=453146685]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -550.55664, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D188" type="Area3D" parent="." unique_id=999756573 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D188" unique_id=1327491679]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -556.687, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D189" type="Area3D" parent="." unique_id=1166129783 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D189" unique_id=1181795989]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -561.5056, 2.9424229, -5.0004635)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D190" type="Area3D" parent="." unique_id=1106935943 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D190" unique_id=613665589]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -539.9143, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D191" type="Area3D" parent="." unique_id=1176002587 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D191" unique_id=622827302]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -545.8391, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D192" type="Area3D" parent="." unique_id=1739350362 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D192" unique_id=704459778]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -551.5183, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D193" type="Area3D" parent="." unique_id=366133803 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D193" unique_id=29340241]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -557.25977, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D194" type="Area3D" parent="." unique_id=1295137350 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D194" unique_id=1500154035]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -562.1848, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D195" type="Area3D" parent="." unique_id=1047495560 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D195" unique_id=419559073]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -693.17773, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D196" type="Area3D" parent="." unique_id=1070503141 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D196" unique_id=2114150164]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -698.9868, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D197" type="Area3D" parent="." unique_id=1062187226 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D197" unique_id=1608208961]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -704.3721, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D198" type="Area3D" parent="." unique_id=1690007384 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D198" unique_id=940089803]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -710.18506, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D199" type="Area3D" parent="." unique_id=1234226612 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D199" unique_id=581727309]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -715.73047, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D200" type="Area3D" parent="." unique_id=1925437825 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D200" unique_id=856993458]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -721.7883, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D201" type="Area3D" parent="." unique_id=841667103 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D201" unique_id=1089659787]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -727.2517, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D202" type="Area3D" parent="." unique_id=144315780 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D202" unique_id=1101323566]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -733.1133, 2.9446564, 4.458491)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D203" type="Area3D" parent="." unique_id=2145673574 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D203" unique_id=2018577958]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -732.96387, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D204" type="Area3D" parent="." unique_id=1763341617 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D204" unique_id=1968515957]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -727.291, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D205" type="Area3D" parent="." unique_id=207801403 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D205" unique_id=968134957]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -721.5796, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D206" type="Area3D" parent="." unique_id=501648065 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D206" unique_id=1196159495]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -715.6748, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D207" type="Area3D" parent="." unique_id=141273622 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D207" unique_id=331329178]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -710.3164, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D208" type="Area3D" parent="." unique_id=2138847231 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D208" unique_id=704753972]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -704.66797, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D209" type="Area3D" parent="." unique_id=1886082800 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D209" unique_id=260168050]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -698.9507, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D210" type="Area3D" parent="." unique_id=951671600 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D210" unique_id=335760566]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -695.54663, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D211" type="Area3D" parent="." unique_id=1642701073 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D211" unique_id=1315238167]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -692.50464, 2.9446564, -5.205378)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D212" type="Area3D" parent="." unique_id=2027516414 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D212" unique_id=273769032]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -472.34277, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D213" type="Area3D" parent="." unique_id=1799304907 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D213" unique_id=1772141785]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -478.01587, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D214" type="Area3D" parent="." unique_id=842802620 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D214" unique_id=471717792]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -483.7339, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D215" type="Area3D" parent="." unique_id=1882444261 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D215" unique_id=212741162]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -488.82666, 2.9446564, -0.4472785)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D216" type="Area3D" parent="." unique_id=1718675096 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D216" unique_id=84965859]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -220.3147, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D217" type="Area3D" parent="." unique_id=675594014 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D217" unique_id=1977707118]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -225.65942, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D218" type="Area3D" parent="." unique_id=1755507595 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D218" unique_id=214291210]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -230.99976, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D219" type="Area3D" parent="." unique_id=1165675930 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D219" unique_id=1417217460]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -237.18091, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D220" type="Area3D" parent="." unique_id=1451605371 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D220" unique_id=995677591]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -243.04346, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D221" type="Area3D" parent="." unique_id=418376922 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D221" unique_id=634666311]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -248.32178, 2.9446526, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D222" type="Area3D" parent="." unique_id=1917740768 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D222" unique_id=829240349]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -254.02759, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D223" type="Area3D" parent="." unique_id=210498509 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D223" unique_id=903520541]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -259.74756, 2.9446564, -5.219832)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D224" type="Area3D" parent="." unique_id=1022625389 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D224" unique_id=1699073589]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -66.703125, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D225" type="Area3D" parent="." unique_id=1970368135 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D225" unique_id=1341756912]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -72.457886, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D226" type="Area3D" parent="." unique_id=2107031654 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D226" unique_id=1876518207]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -78.017334, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D227" type="Area3D" parent="." unique_id=1634079107 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D227" unique_id=2089425105]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -83.52185, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Area3D228" type="Area3D" parent="." unique_id=1015070686 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1892.9497, 0, -0.643425)
+collision_layer = 3
+script = ExtResource("8_5vw27")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D228" unique_id=1461324126]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -88.74292, 2.9446564, 4.210796)
+shape = SubResource("CylinderShape3D_272bh")
+
+[node name="Coin" type="Node3D" parent="." unique_id=1702180456 groups=["Coin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.643425)

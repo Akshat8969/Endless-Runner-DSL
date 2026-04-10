@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bes7mwry52krv"]
+
+[ext_resource type="PackedScene" uid="uid://ccsh2lubwcrdl" path="res://models/train3.glb" id="1_hwegp"]
+
+[node name="train3" unique_id=229090591 instance=ExtResource("1_hwegp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2958713, 0)

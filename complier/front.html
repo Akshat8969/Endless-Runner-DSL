@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>DSL Compiler — Stage Visualizer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#07080d;
+  --glass:#0f1118;
+  --glass2:#161926;
+  --border:#1f2535;
+  --border2:#2a3450;
+  --c0:#e0e6ff; /* source  */
+  --c1:#5b8def; /* lexer   */
+  --c2:#e25b8e; /* parser  */
+  --c3:#f0a040; /* semantic*/
+  --c4:#40d9a0; /* codegen */
+  --text:#c4cce8;
+  --muted:#4a5270;
+  --white:#ffffff;
+}
+
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif}
+
+/* ── STARFIELD BG ── */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* ── APP SHELL ── */
+#app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column}
+
+/* ── NAV ── */
+nav{display:flex;align-items:center;gap:0;padding:18px 32px;border-bottom:1px solid var(--border);background:rgba(7,8,13,.85);backdrop-filter:blur(12px);flex-shrink:0}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;letter-spacing:-.5px;color:var(--white);margin-right:40px;white-space:nowrap}
+.logo span{opacity:.4}
+
+.nav-steps{display:flex;gap:4px;flex:1}
+.nav-step{display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:8px;border:1px solid transparent;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);transition:all .25s;white-space:nowrap;position:relative;overflow:hidden}
+.nav-step::after{content:'';position:absolute;inset:0;background:currentColor;opacity:0;transition:opacity .2s}
+.nav-step:hover::after{opacity:.06}
+.nav-step .num{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0}
+.nav-step.active{color:var(--stage-color,#fff);border-color:var(--stage-color,#333);background:color-mix(in srgb,var(--stage-color,#fff) 8%,transparent)}
+.nav-step.done{color:var(--stage-color,#fff);opacity:.6}
+.nav-step .arrow{color:var(--muted);margin:0 4px;font-size:.8rem}
+
+/* ── RUN BUTTON ── */
+#run-btn{margin-left:auto;padding:8px 20px;background:linear-gradient(135deg,var(--c1),var(--c2));border:none;border-radius:8px;color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:.8rem;cursor:pointer;transition:transform .15s,box-shadow .2s;box-shadow:0 0 0 rgba(91,141,239,0)}
+#run-btn:hover{transform:scale(1.04);box-shadow:0 4px 20px rgba(91,141,239,.4)}
+#run-btn:active{transform:scale(.97)}
+#run-btn.running{animation:pulse-btn 1s infinite}
+@keyframes pulse-btn{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* ── PAGES ── */
+#pages{flex:1;position:relative;overflow:hidden}
+.page{position:absolute;inset:0;padding:28px 36px;display:flex;flex-direction:column;gap:20px;opacity:0;pointer-events:none;transform:translateX(40px);transition:opacity .45s cubic-bezier(.4,0,.2,1),transform .45s cubic-bezier(.4,0,.2,1)}
+.page.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.page.exit-left{opacity:0;transform:translateX(-50px)}
+
+/* ── PAGE HEADER ── */
+.page-header{display:flex;align-items:flex-end;gap:16px}
+.page-num{font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;line-height:1;color:color-mix(in srgb,var(--stage-color) 25%,transparent);letter-spacing:-3px}
+.page-titles h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--white);line-height:1}
+.page-titles p{font-size:.8rem;color:var(--muted);margin-top:4px}
+.stage-pill{margin-left:auto;padding:4px 14px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.5px;border:1px solid var(--stage-color);color:var(--stage-color);background:color-mix(in srgb,var(--stage-color) 10%,transparent)}
+
+/* ── GRID LAYOUTS ── */
+.content-grid{display:grid;gap:16px;flex:1;overflow:hidden}
+.g-2{grid-template-columns:1fr 1fr}
+.g-3{grid-template-columns:1fr 1fr 1fr}
+.g-1-2{grid-template-columns:1fr 2fr}
+.g-2-1{grid-template-columns:2fr 1fr}
+
+/* ── CARDS ── */
+.card{background:var(--glass);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--glass2);border-bottom:1px solid var(--border);flex-shrink:0}
+.card-head-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--stage-color,var(--text))}
+.card-badge{font-size:.65rem;padding:2px 8px;border-radius:10px;background:color-mix(in srgb,var(--stage-color) 15%,transparent);color:var(--stage-color);font-weight:600}
+.card-body{padding:12px 14px;overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+
+/* ── EDITOR / TEXTAREA ── */
+textarea{width:100%;height:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;resize:none;caret-color:var(--c1)}
+
+/* ── TOKENS ── */
+.token-table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.72rem}
+.token-table th{color:var(--muted);font-weight:600;text-align:left;padding:4px 8px;border-bottom:1px solid var(--border)}
+.token-row{opacity:0;transform:translateX(-8px);transition:opacity .2s,transform .2s}
+.token-row.in{opacity:1;transform:translateX(0)}
+.token-row td{padding:4px 8px;border-bottom:1px solid #0e1118}
+.tk{display:inline-block;padding:1px 7px;border-radius:4px;font-size:.65rem;font-weight:700}
+.tk-KW{background:#1a2e54;color:#7ab0ff}
+.tk-NUM{background:#0f3020;color:#5be8a0}
+.tk-STR{background:#3a1e08;color:#e8a060}
+.tk-BOOL{background:#2a1840;color:#b07ae8}
+.tk-ID{background:#1e1830;color:#9070e8}
+.tk-EOF{background:#1a1a1a;color:#444}
+
+/* ── AST ── */
+.ast-node{padding:8px 12px;border-left:2px solid var(--border);margin-bottom:6px;border-radius:0 8px 8px 0;background:color-mix(in srgb,var(--c2) 4%,transparent);opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s,border-color .2s}
+.ast-node:hover{border-left-color:var(--c2)}
+.ast-node.in{opacity:1;transform:translateY(0)}
+.ast-type{color:var(--c2);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.75rem}
+.ast-fields{margin-top:4px;display:flex;gap:12px;flex-wrap:wrap}
+.ast-field{font-family:'JetBrains Mono',monospace;font-size:.7rem}
+.ast-key{color:var(--muted)}
+.ast-val{color:var(--c4)}
+
+/* ── SEMANTIC ITEMS ── */
+.sem-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:8px;font-size:.8rem;opacity:0;transform:translateX(-10px);transition:opacity .25s,transform .25s}
+.sem-item.in{opacity:1;transform:translateX(0)}
+.sem-ok{background:#0a2018;border:1px solid #1a5030;color:#5be8a0}
+.sem-warn{background:#2a1e06;border:1px solid #6a4010;color:#e8b060}
+.sem-err{background:#2a0808;border:1px solid #6a1818;color:#e86060}
+.sem-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+.sem-msg{line-height:1.5}
+
+/* ── JSON OUTPUT ── */
+pre.json-out{font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.7;white-space:pre-wrap}
+.jk{color:#7ab0ff}
+.js{color:#e8a060}
+.jn{color:#5be8a0}
+.jb{color:#b07ae8}
+.jbrace{color:var(--muted)}
+
+/* ── PROGRESS STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:4px}
+.stat-card{background:var(--glass2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center}
+.stat-card .val{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--stage-color)}
+.stat-card .lbl{font-size:.68rem;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── PIPELINE FLOW (source page) ── */
+.pipeline-flow{display:flex;align-items:center;justify-content:center;gap:0;padding:10px 0}
+.pf-step{display:flex;flex-direction:column;align-items:center;gap:6px}
+.pf-box{width:100px;height:60px;border-radius:10px;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;text-align:center;transition:all .3s}
+.pf-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.pf-arrow{font-size:1.2rem;color:var(--muted);margin:0 6px;margin-bottom:24px}
+
+/* ── FLOW LINE ANIMATION ── */
+.flow-line{height:2px;background:linear-gradient(90deg,var(--c1),var(--c4));border-radius:2px;margin:8px 0;transform-origin:left;transform:scaleX(0);transition:transform .8s cubic-bezier(.4,0,.2,1)}
+.flow-line.in{transform:scaleX(1)}
+
+/* ── PLACEHOLDER ── */
+.ph{color:var(--muted);font-size:.8rem;text-align:center;padding:30px 0;font-style:italic}
+
+/* ── PAGE TRANSITIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.anim-child{animation:fadeUp .4s ease both}
+
+/* ── scrollbar ── */
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<div id="app">
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">DSL<span>//</span>Compiler</div>
+    <div class="nav-steps" id="nav-steps">
+      <!-- injected by JS -->
+    </div>
+    <button id="run-btn" onclick="runAll()">▶ Run Compiler</button>
+  </nav>
+
+  <!-- PAGES -->
+  <div id="pages">
+
+    <!-- PAGE 0: SOURCE -->
+    <div class="page active" id="page-0" style="--stage-color:var(--c0)">
+      <div class="page-header">
+        <div class="page-num">00</div>
+        <div class="page-titles">
+          <h2>Source Code</h2>
+          <p>Write your Game DSL — the raw input to the compiler</p>
+        </div>
+        <div class="stage-pill">INPUT</div>
+      </div>
+      <div class="content-grid g-2-1" style="flex:1;min-height:0">
+        <div class="card">
+          <div class="card-head">
+            <span class="card-head-title">game.dsl</span>
+            <span class="card-badge">editable</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <textarea id="source" style="padding:14px"># Game DSL Source
+PLAYER SPEED 30
+PLAYER LIVES 3
+PLAYER SIZE 50
+PLAYER COLOR "#00ff88"
+
+INCREASE SPEED 3 EVERY 15
+INCREASE SCORE BY 1
+
+OBSTACLE SPAWN RATE 2
+OBSTACLE SPEED 20
+OBSTACLE COLOR "#ff4444"
+
+COIN VALUE 10
+COIN SPAWN RATE 1
+COIN COLOR "#ffd700"
+
+POWERUP SPAWN RATE 1
+POWERUP VALUE 50
+
+BACKGROUND COLOR "#0a0a1a"
+BACKGROUND SPEED 5
+
+DIFFICULTY MEDIUM
+SOUND ENABLE
+MUSIC ENABLE</textarea>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card" style="flex:1">
+            <div class="card-head"><span class="card-head-title">Pipeline</span></div>
+            <div class="card-body">
+              <div class="pipeline-flow" id="pf">
+                <div class="pf-step">
+                  <div class="pf-box" style="border-color:var(--c0);color:var(--c0)">Source</div>
+                  <div class="pf-label">input</div>
+                </div>
+                <div class="pf-arrow">→</div>
+                <div class="pf-step">
+                  <div class="pf-box" style="border-color:var(--c1);color:var(--c1)" id="pf1">Lexer</div>
+                  <div class="pf-label">tokenize</div>
+                </div>
+                <div class="pf-arrow">→</div>
+                <div class="pf-step">
+                  <div class="pf-box" style="border-color:var(--c2);color:var(--c2)" id="pf2">Parser</div>
+                  <div class="pf-label">ast</div>
+                </div>
+                <div class="pf-arrow">→</div>
+                <div class="pf-step">
+                  <div class="pf-box" style="border-color:var(--c3);color:var(--c3)" id="pf3">Semantic</div>
+                  <div class="pf-label">validate</div>
+                </div>
+                <div class="pf-arrow">→</div>
+                <div class="pf-step">
+                  <div class="pf-box" style="border-color:var(--c4);color:var(--c4)" id="pf4">CodeGen</div>
+                  <div class="pf-label">output</div>
+                </div>
+              </div>
+              <div class="flow-line" id="flow-line"></div>
+            </div>
+          </div>
+          <div class="card" style="flex:0 0 auto">
+            <div class="card-head"><span class="card-head-title">Source Stats</span></div>
+            <div class="card-body">
+              <div class="stat-grid">
+                <div class="stat-card"><div class="val" id="src-lines">0</div><div class="lbl">Lines</div></div>
+                <div class="stat-card"><div class="val" id="src-stmts">0</div><div class="lbl">Statements</div></div>
+                <div class="stat-card"><div class="val" id="src-chars">0</div><div class="lbl">Chars</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 1: LEXER -->
+    <div class="page" id="page-1" style="--stage-color:var(--c1)">
+      <div class="page-header">
+        <div class="page-num">01</div>
+        <div class="page-titles">
+          <h2>Lexer — Tokenization</h2>
+          <p>Source characters → stream of typed tokens</p>
+        </div>
+        <div class="stage-pill">STAGE 1</div>
+      </div>
+      <div class="stat-grid anim-child" style="animation-delay:.05s">
+        <div class="stat-card"><div class="val" id="lex-total">—</div><div class="lbl">Total Tokens</div></div>
+        <div class="stat-card"><div class="val" id="lex-kw">—</div><div class="lbl">Keywords</div></div>
+        <div class="stat-card"><div class="val" id="lex-lit">—</div><div class="lbl">Literals</div></div>
+      </div>
+      <div class="card anim-child" style="flex:1;min-height:0;animation-delay:.1s">
+        <div class="card-head">
+          <span class="card-head-title">Token Stream</span>
+          <span class="card-badge" id="lex-badge">—</span>
+        </div>
+        <div class="card-body">
+          <table class="token-table">
+            <thead><tr>
+              <th style="width:130px">Type</th>
+              <th>Value</th>
+              <th style="width:80px">Line</th>
+              <th style="width:60px">Col</th>
+            </tr></thead>
+            <tbody id="tok-body"><tr><td colspan="4"><div class="ph">Run compiler to see tokens…</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 2: PARSER -->
+    <div class="page" id="page-2" style="--stage-color:var(--c2)">
+      <div class="page-header">
+        <div class="page-num">02</div>
+        <div class="page-titles">
+          <h2>Parser — AST</h2>
+          <p>Token stream → Abstract Syntax Tree nodes</p>
+        </div>
+        <div class="stage-pill">STAGE 2</div>
+      </div>
+      <div class="stat-grid anim-child" style="animation-delay:.05s">
+        <div class="stat-card"><div class="val" id="ast-total">—</div><div class="lbl">AST Nodes</div></div>
+        <div class="stat-card"><div class="val" id="ast-types">—</div><div class="lbl">Unique Types</div></div>
+        <div class="stat-card"><div class="val" id="ast-errs">—</div><div class="lbl">Parse Errors</div></div>
+      </div>
+      <div class="card anim-child" style="flex:1;min-height:0;animation-delay:.1s">
+        <div class="card-head">
+          <span class="card-head-title">AST Nodes</span>
+          <span class="card-badge" id="ast-badge">—</span>
+        </div>
+        <div class="card-body" id="ast-body">
+          <div class="ph">Run compiler to see AST…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 3: SEMANTIC -->
+    <div class="page" id="page-3" style="--stage-color:var(--c3)">
+      <div class="page-header">
+        <div class="page-num">03</div>
+        <div class="page-titles">
+          <h2>Semantic Analysis</h2>
+          <p>Validate AST — range checks, required fields, cross-rules</p>
+        </div>
+        <div class="stage-pill">STAGE 3</div>
+      </div>
+      <div class="stat-grid anim-child" style="animation-delay:.05s">
+        <div class="stat-card"><div class="val" id="sem-ok-count">—</div><div class="lbl">Passed</div></div>
+        <div class="stat-card"><div class="val" id="sem-warn-count" style="--stage-color:var(--c3)">—</div><div class="lbl">Warnings</div></div>
+        <div class="stat-card"><div class="val" id="sem-err-count" style="--stage-color:#e86060">—</div><div class="lbl">Errors</div></div>
+      </div>
+      <div class="card anim-child" style="flex:1;min-height:0;animation-delay:.1s">
+        <div class="card-head">
+          <span class="card-head-title">Analysis Results</span>
+          <span class="card-badge" id="sem-badge">—</span>
+        </div>
+        <div class="card-body" id="sem-body">
+          <div class="ph">Run compiler to see semantic analysis…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: CODEGEN -->
+    <div class="page" id="page-4" style="--stage-color:var(--c4)">
+      <div class="page-header">
+        <div class="page-num">04</div>
+        <div class="page-titles">
+          <h2>Code Generation</h2>
+          <p>Validated AST → final game_config.json output</p>
+        </div>
+        <div class="stage-pill">OUTPUT</div>
+      </div>
+      <div class="content-grid g-1-2" style="flex:1;min-height:0">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="stat-grid" style="grid-template-columns:1fr 1fr;gap:10px">
+            <div class="stat-card"><div class="val" id="cg-keys">—</div><div class="lbl">Sections</div></div>
+            <div class="stat-card"><div class="val" id="cg-fields">—</div><div class="lbl">Fields</div></div>
+          </div>
+          <div class="card anim-child" style="flex:1;animation-delay:.1s">
+            <div class="card-head"><span class="card-head-title">Sections</span></div>
+            <div class="card-body" id="cg-sections">
+              <div class="ph">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="card anim-child" style="animation-delay:.05s">
+          <div class="card-head">
+            <span class="card-head-title">game_config.json</span>
+            <span class="card-badge" id="cg-badge">—</span>
+          </div>
+          <div class="card-body">
+            <pre class="json-out" id="json-out"><span style="color:var(--muted);font-style:italic">Run compiler to see output…</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+</div><!-- /app -->
+
+<script>
+// ───────────────────────────────────────────────────────────
+//  STARFIELD
+// ───────────────────────────────────────────────────────────
+(function(){
+  const c=document.getElementById('stars'),ctx=c.getContext('2d');
+  let W,H,stars=[];
+  function init(){
+    W=c.width=window.innerWidth;H=c.height=window.innerHeight;
+    stars=Array.from({length:120},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.3,a:Math.random(),da:(.002+Math.random()*.003)*(Math.random()<.5?1:-1)}));
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(const s of stars){
+      s.a+=s.da;if(s.a>1||s.a<0)s.da*=-1;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(180,195,255,${Math.max(0,s.a)})`;ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',init);
+  init();draw();
+})();
+
+// ───────────────────────────────────────────────────────────
+//  STAGE META
+// ───────────────────────────────────────────────────────────
+const STAGES=[
+  {id:0,label:'Source',  color:'#e0e6ff'},
+  {id:1,label:'Lexer',   color:'#5b8def'},
+  {id:2,label:'Parser',  color:'#e25b8e'},
+  {id:3,label:'Semantic',color:'#f0a040'},
+  {id:4,label:'CodeGen', color:'#40d9a0'},
+];
+let currentPage=0;
+
+// ── build nav ──────────────────────────────────────────────
+const navEl=document.getElementById('nav-steps');
+STAGES.forEach((s,i)=>{
+  if(i>0){const a=document.createElement('span');a.className='arrow';a.style.cssText='color:var(--muted);font-size:.75rem;padding:0 2px';a.textContent='›';navEl.appendChild(a);}
+  const el=document.createElement('div');
+  el.className='nav-step'+(i===0?' active':'');
+  el.style.setProperty('--stage-color',s.color);
+  el.innerHTML=`<span class="num">${String(s.id).padStart(2,'0')}</span>${s.label}`;
+  el.onclick=()=>goTo(i);
+  el.id=`nav-${i}`;
+  navEl.appendChild(el);
+});
+
+function goTo(idx){
+  const pages=document.querySelectorAll('.page');
+  const dir=idx>currentPage?1:-1;
+  pages[currentPage].classList.remove('active');
+  pages[currentPage].style.transform=dir>0?'translateX(-50px)':'translateX(50px)';
+  pages[currentPage].style.opacity='0';
+  setTimeout(()=>{pages[currentPage].style.transform='';pages[currentPage].style.opacity='';},500);
+
+  currentPage=idx;
+  pages[idx].classList.add('active');
+
+  document.querySelectorAll('.nav-step').forEach((el,i)=>{
+    el.classList.toggle('active',i===idx);
+    el.classList.toggle('done',i<idx);
+  });
+}
+
+// ── update source stats live ───────────────────────────────
+const srcEl=document.getElementById('source');
+function updateSrcStats(){
+  const v=srcEl.value;
+  const lines=v.split('\n').filter(l=>l.trim()&&!l.trim().startsWith('#')).length;
+  const all=v.split('\n').length;
+  document.getElementById('src-lines').textContent=all;
+  document.getElementById('src-stmts').textContent=lines;
+  document.getElementById('src-chars').textContent=v.length;
+}
+srcEl.addEventListener('input',updateSrcStats);
+updateSrcStats();
+
+// ───────────────────────────────────────────────────────────
+//  LEXER (JS port)
+// ───────────────────────────────────────────────────────────
+const TOKEN_RULES=[
+  ['FLOAT',/^\d+\.\d+/],['NUMBER',/^\d+/],['STRING',/^"[^"]*"/],
+  ['BOOL',/^(?:true|false)\b/],
+  ['PLAYER',/^PLAYER\b/],['SPEED',/^SPEED\b/],['INCREASE',/^INCREASE\b/],
+  ['EVERY',/^EVERY\b/],['LIVES',/^LIVES\b/],['SCORE',/^SCORE\b/],
+  ['OBSTACLE',/^OBSTACLE\b/],['COIN',/^COIN\b/],['POWERUP',/^POWERUP\b/],
+  ['BACKGROUND',/^BACKGROUND\b/],['DIFFICULTY',/^DIFFICULTY\b/],
+  ['EASY',/^EASY\b/],['MEDIUM',/^MEDIUM\b/],['HARD',/^HARD\b/],
+  ['SOUND',/^SOUND\b/],['MUSIC',/^MUSIC\b/],['COLOR',/^COLOR\b/],
+  ['SIZE',/^SIZE\b/],['SPAWN',/^SPAWN\b/],['RATE',/^RATE\b/],
+  ['VALUE',/^VALUE\b/],['ENABLE',/^ENABLE\b/],['DISABLE',/^DISABLE\b/],
+  ['SET',/^SET\b/],['BY',/^BY\b/],['AT',/^AT\b/],['MAX',/^MAX\b/],['MIN',/^MIN\b/],
+  ['ID',/^[a-zA-Z_][a-zA-Z0-9_]*/],
+  ['COMMENT',/^#[^\n]*/],['SKIP',/^[ \t]+/],['NEWLINE',/^\n/],
+];
+const KEYWORDS=new Set(['PLAYER','SPEED','INCREASE','EVERY','LIVES','SCORE','OBSTACLE','COIN','POWERUP','BACKGROUND','DIFFICULTY','EASY','MEDIUM','HARD','SOUND','MUSIC','COLOR','SIZE','SPAWN','RATE','VALUE','ENABLE','DISABLE','SET','BY','AT','MAX','MIN']);
+
+function tokenize(code){
+  const tokens=[];let pos=0,line=1,col=1;
+  while(pos<code.length){
+    let matched=false;
+    for(const[kind,re] of TOKEN_RULES){
+      const m=code.slice(pos).match(re);if(!m)continue;
+      const raw=m[0];
+      if(kind==='NEWLINE'){line++;col=1;pos++;matched=true;break;}
+      if(kind==='SKIP'||kind==='COMMENT'){col+=raw.length;pos+=raw.length;matched=true;break;}
+      let val=raw;
+      if(kind==='NUMBER')val=parseInt(raw,10);
+      else if(kind==='FLOAT')val=parseFloat(raw);
+      else if(kind==='BOOL')val=raw==='true';
+      else if(kind==='STRING')val=raw.slice(1,-1);
+      tokens.push({kind,value:val,raw,line,col});
+      col+=raw.length;pos+=raw.length;matched=true;break;
+    }
+    if(!matched){pos++;col++;}
+  }
+  tokens.push({kind:'EOF',value:null,line,col});
+  return tokens;
+}
+
+function tkClass(k){
+  if(KEYWORDS.has(k))return'tk-KW';
+  if(k==='NUMBER'||k==='FLOAT')return'tk-NUM';
+  if(k==='STRING')return'tk-STR';
+  if(k==='BOOL')return'tk-BOOL';
+  if(k==='ID')return'tk-ID';
+  return'tk-EOF';
+}
+
+// ───────────────────────────────────────────────────────────
+//  PARSER
+// ───────────────────────────────────────────────────────────
+function parse(tokens){
+  let pos=0;const stmts=[],errors=[];
+  const cur=()=>tokens[pos];
+  const adv=()=>tokens[pos<tokens.length-1?pos++:pos];
+  const expectK=k=>{if(cur().kind!==k)throw`Expected ${k} got ${cur().kind}`;return adv();};
+  const num=()=>{if(cur().kind!=='NUMBER'&&cur().kind!=='FLOAT')throw`Expected number got ${cur().kind}`;return adv().value;};
+  const str=()=>{if(cur().kind!=='STRING')throw`Expected string got ${cur().kind}`;return adv().value;};
+  while(cur().kind!=='EOF'){
+    try{
+      const k=cur().kind;
+      if(k==='PLAYER'){adv();const a=cur().kind;
+        if(a==='SPEED'){adv();stmts.push({type:'player_speed',speed:num()});}
+        else if(a==='LIVES'){adv();stmts.push({type:'player_lives',lives:num()});}
+        else if(a==='SIZE'){adv();stmts.push({type:'player_size',size:num()});}
+        else if(a==='COLOR'){adv();stmts.push({type:'player_color',color:str()});}
+        else throw`Unknown PLAYER attr ${a}`;
+      }else if(k==='INCREASE'){adv();const t=cur().kind;
+        if(t==='SPEED'){adv();const am=num();expectK('EVERY');stmts.push({type:'increase_speed',amount:am,interval:num()});}
+        else if(t==='SCORE'){adv();expectK('BY');stmts.push({type:'increase_score',amount:num()});}
+        else throw`Unknown INCREASE target ${t}`;
+      }else if(k==='OBSTACLE'){adv();const a=cur().kind;
+        if(a==='SPAWN'){adv();expectK('RATE');stmts.push({type:'obstacle_spawn_rate',rate:num()});}
+        else if(a==='SPEED'){adv();stmts.push({type:'obstacle_speed',speed:num()});}
+        else if(a==='SIZE'){adv();stmts.push({type:'obstacle_size',size:num()});}
+        else if(a==='COLOR'){adv();stmts.push({type:'obstacle_color',color:str()});}
+        else throw`Unknown OBSTACLE attr ${a}`;
+      }else if(k==='COIN'){adv();const a=cur().kind;
+        if(a==='VALUE'){adv();stmts.push({type:'coin_value',value:num()});}
+        else if(a==='SPAWN'){adv();expectK('RATE');stmts.push({type:'coin_spawn_rate',rate:num()});}
+        else if(a==='COLOR'){adv();stmts.push({type:'coin_color',color:str()});}
+        else throw`Unknown COIN attr ${a}`;
+      }else if(k==='POWERUP'){adv();const a=cur().kind;
+        if(a==='SPAWN'){adv();expectK('RATE');stmts.push({type:'powerup_spawn_rate',rate:num()});}
+        else if(a==='VALUE'){adv();stmts.push({type:'powerup_value',value:num()});}
+        else throw`Unknown POWERUP attr ${a}`;
+      }else if(k==='BACKGROUND'){adv();const a=cur().kind;
+        if(a==='COLOR'){adv();stmts.push({type:'background_color',color:str()});}
+        else if(a==='SPEED'){adv();stmts.push({type:'background_speed',speed:num()});}
+        else throw`Unknown BACKGROUND attr ${a}`;
+      }else if(k==='DIFFICULTY'){adv();const lv=cur().kind;
+        if(['EASY','MEDIUM','HARD'].includes(lv)){adv();stmts.push({type:'difficulty',level:lv.toLowerCase()});}
+        else throw`Expected EASY|MEDIUM|HARD got ${lv}`;
+      }else if(k==='SOUND'){adv();const e=cur().kind;
+        if(e==='ENABLE'||e==='DISABLE'){adv();stmts.push({type:'sound',enabled:e==='ENABLE'});}
+        else throw`Expected ENABLE|DISABLE after SOUND`;
+      }else if(k==='MUSIC'){adv();const e=cur().kind;
+        if(e==='ENABLE'||e==='DISABLE'){adv();stmts.push({type:'music',enabled:e==='ENABLE'});}
+        else throw`Expected ENABLE|DISABLE after MUSIC`;
+      }else if(k==='SET'){adv();const n=expectK('ID').value;stmts.push({type:'set_var',name:n,value:num()});}
+      else{adv();}
+    }catch(e){errors.push(String(e));while(cur().kind!=='EOF'){adv();break;}}
+  }
+  return{statements:stmts,errors};
+}
+
+// ───────────────────────────────────────────────────────────
+//  SEMANTIC
+// ───────────────────────────────────────────────────────────
+function analyse(stmts){
+  const warnings=[],errors=[],seen=new Set(stmts.map(s=>s.type));
+  if(!seen.has('player_speed'))errors.push('Missing required: PLAYER SPEED');
+  if(!seen.has('player_lives'))errors.push('Missing required: PLAYER LIVES');
+  const BOUNDS={player_speed:{speed:[1,9999]},player_lives:{lives:[1,10]},player_size:{size:[1,500]},increase_speed:{amount:[0.1,100],interval:[1,3600]},obstacle_spawn_rate:{rate:[0,100]},coin_value:{value:[1,1e6]},coin_spawn_rate:{rate:[0,100]},powerup_spawn_rate:{rate:[0,100]},powerup_value:{value:[1,1e6]},background_speed:{speed:[0,9999]}};
+  for(const s of stmts){const b=BOUNDS[s.type]||{};for(const[f,[lo,hi]]of Object.entries(b)){const v=s[f];if(v!==undefined){if(v<lo)errors.push(`${s.type}.${f} = ${v} is below min (${lo})`);if(v>hi)errors.push(`${s.type}.${f} = ${v} exceeds max (${hi})`);}}};
+  const coinR=stmts.find(s=>s.type==='coin_spawn_rate');
+  if(seen.has('coin_value')&&coinR&&coinR.rate===0)warnings.push('COIN VALUE set but COIN SPAWN RATE is 0 — coins never appear.');
+  const puR=stmts.find(s=>s.type==='powerup_spawn_rate');
+  if(seen.has('powerup_value')&&puR&&puR.rate===0)warnings.push('POWERUP VALUE set but SPAWN RATE is 0.');
+  const is=stmts.find(s=>s.type==='increase_speed');
+  if(is&&is.interval<3)warnings.push(`INCREASE SPEED interval ${is.interval}s is very short — game may become impossibly fast.`);
+  // Build passed checks list
+  const passed=[];
+  if(seen.has('player_speed'))passed.push('PLAYER SPEED present ✓');
+  if(seen.has('player_lives'))passed.push('PLAYER LIVES present ✓');
+  if(seen.has('difficulty'))passed.push('DIFFICULTY level set ✓');
+  passed.push(`${stmts.length} statements parsed without error ✓`);
+  return{errors,warnings,passed};
+}
+
+// ───────────────────────────────────────────────────────────
+//  CODEGEN
+// ───────────────────────────────────────────────────────────
+function codegen(stmts){
+  const cfg={};
+  const s=(path,val)=>{const ps=path.split('.');let o=cfg;for(let i=0;i<ps.length-1;i++){if(!o[ps[i]])o[ps[i]]={};o=o[ps[i]];}o[ps[ps.length-1]]=val;};
+  const MAP={
+    player_speed:n=>s('player.speed',n.speed),player_lives:n=>s('player.lives',n.lives),
+    player_size:n=>s('player.size',n.size),player_color:n=>s('player.color',n.color),
+    increase_speed:n=>{s('speed_increase.amount',n.amount);s('speed_increase.interval',n.interval);},
+    increase_score:n=>s('score.increase_by',n.amount),
+    obstacle_spawn_rate:n=>s('obstacle.spawn_rate',n.rate),obstacle_speed:n=>s('obstacle.speed',n.speed),
+    obstacle_size:n=>s('obstacle.size',n.size),obstacle_color:n=>s('obstacle.color',n.color),
+    coin_value:n=>s('coin.value',n.value),coin_spawn_rate:n=>s('coin.spawn_rate',n.rate),
+    coin_color:n=>s('coin.color',n.color),
+    powerup_spawn_rate:n=>s('powerup.spawn_rate',n.rate),powerup_value:n=>s('powerup.value',n.value),
+    background_color:n=>s('background.color',n.color),background_speed:n=>s('background.speed',n.speed),
+    difficulty:n=>cfg['difficulty']=n.level,
+    sound:n=>s('audio.sound',n.enabled),music:n=>s('audio.music',n.enabled),
+    set_var:n=>s(`variables.${n.name}`,n.value),
+  };
+  stmts.forEach(st=>{if(MAP[st.type])MAP[st.type](st);});
+  return cfg;
+}
+
+// ───────────────────────────────────────────────────────────
+//  JSON SYNTAX HIGHLIGHT
+// ───────────────────────────────────────────────────────────
+function hlJSON(obj){
+  return JSON.stringify(obj,null,2)
+    .replace(/("(?:[^"\\]|\\.)*")\s*:/g,'<span class="jk">$1</span>:')
+    .replace(/:\s*("(?:[^"\\]|\\.)*")/g,': <span class="js">$1</span>')
+    .replace(/:\s*(\d+(?:\.\d+)?)/g,': <span class="jn">$1</span>')
+    .replace(/:\s*(true|false)/g,': <span class="jb">$1</span>')
+    .replace(/[{}\[\]]/g,m=>`<span class="jbrace">${m}</span>`);
+}
+
+// ───────────────────────────────────────────────────────────
+//  ANIMATED RENDER HELPERS
+// ───────────────────────────────────────────────────────────
+function staggerIn(selector,parent,delay=30){
+  const els=(parent||document).querySelectorAll(selector);
+  els.forEach((el,i)=>{setTimeout(()=>el.classList.add('in'),i*delay);});
+}
+
+// ───────────────────────────────────────────────────────────
+//  MAIN RUNNER
+// ───────────────────────────────────────────────────────────
+function runAll(){
+  const btn=document.getElementById('run-btn');
+  btn.classList.add('running');
+  btn.textContent='⟳ Running…';
+
+  const code=srcEl.value;
+
+  // ── Stage 1: Lexer ────────────────────────────────────────
+  const tokens=tokenize(code);
+  const vis=tokens.filter(t=>t.kind!=='EOF');
+  const kws=vis.filter(t=>KEYWORDS.has(t.kind)).length;
+  const lits=vis.filter(t=>['NUMBER','FLOAT','STRING','BOOL'].includes(t.kind)).length;
+
+  document.getElementById('lex-total').textContent=vis.length;
+  document.getElementById('lex-kw').textContent=kws;
+  document.getElementById('lex-lit').textContent=lits;
+  document.getElementById('lex-badge').textContent=`${vis.length} tokens`;
+
+  const tbody=document.getElementById('tok-body');
+  tbody.innerHTML=vis.map((t,i)=>
+    `<tr class="token-row" style="transition-delay:${i*18}ms">
+      <td><span class="tk ${tkClass(t.kind)}">${t.kind}</span></td>
+      <td style="color:#c4cce8;font-family:'JetBrains Mono',monospace">${String(t.value===null?'':t.value).replace(/</g,'&lt;')}</td>
+      <td style="color:var(--muted)">${t.line}</td>
+      <td style="color:var(--muted)">${t.col}</td>
+    </tr>`
+  ).join('');
+
+  // ── Stage 2: Parser ───────────────────────────────────────
+  const{statements,errors:parseErrs}=parse(tokens);
+  const uniqueTypes=new Set(statements.map(s=>s.type)).size;
+
+  document.getElementById('ast-total').textContent=statements.length;
+  document.getElementById('ast-types').textContent=uniqueTypes;
+  document.getElementById('ast-errs').textContent=parseErrs.length;
+  document.getElementById('ast-badge').textContent=`${statements.length} nodes`;
+
+  const astBody=document.getElementById('ast-body');
+  astBody.innerHTML=statements.map((s,i)=>{
+    const fields=Object.entries(s).filter(([k])=>k!=='type')
+      .map(([k,v])=>`<span class="ast-field"><span class="ast-key">${k}:</span> <span class="ast-val">${JSON.stringify(v)}</span></span>`).join('');
+    return `<div class="ast-node" style="transition-delay:${i*40}ms"><span class="ast-type">${s.type}</span><div class="ast-fields">${fields}</div></div>`;
+  }).join('');
+
+  // ── Stage 3: Semantic ─────────────────────────────────────
+  const{errors:semErrs,warnings:semWarns,passed}=analyse(statements);
+  const semOk=passed.length;
+
+  document.getElementById('sem-ok-count').textContent=semOk;
+  document.getElementById('sem-warn-count').textContent=semWarns.length;
+  document.getElementById('sem-err-count').textContent=semErrs.length;
+  document.getElementById('sem-badge').textContent=semErrs.length?`${semErrs.length} error(s)`:'All clear ✓';
+
+  const semBody=document.getElementById('sem-body');
+  let semHTML='';
+  let idx=0;
+  passed.forEach(p=>{semHTML+=`<div class="sem-item sem-ok" style="transition-delay:${idx++*50}ms"><span class="sem-icon">✓</span><span class="sem-msg">${p}</span></div>`;});
+  semWarns.forEach(w=>{semHTML+=`<div class="sem-item sem-warn" style="transition-delay:${idx++*50}ms"><span class="sem-icon">⚠</span><span class="sem-msg">${w}</span></div>`;});
+  semErrs.forEach(e=>{semHTML+=`<div class="sem-item sem-err" style="transition-delay:${idx++*50}ms"><span class="sem-icon">✗</span><span class="sem-msg">${e}</span></div>`;});
+  semBody.innerHTML=semHTML;
+
+  // ── Stage 4: CodeGen ──────────────────────────────────────
+  const cfg=codegen(statements);
+  const sections=Object.keys(cfg);
+  const fieldCount=JSON.stringify(cfg).split(':').length-1;
+
+  document.getElementById('cg-keys').textContent=sections.length;
+  document.getElementById('cg-fields').textContent=fieldCount;
+  document.getElementById('cg-badge').textContent=`${sections.length} sections`;
+  document.getElementById('json-out').innerHTML=hlJSON(cfg);
+
+  const cgSec=document.getElementById('cg-sections');
+  cgSec.innerHTML=sections.map((k,i)=>`
+    <div class="ast-node" style="transition-delay:${i*60}ms">
+      <span class="ast-type">${k}</span>
+      <div class="ast-fields">${Object.entries(cfg[k]||{}).slice(0,4).map(([f,v])=>`<span class="ast-field"><span class="ast-key">${f}:</span> <span class="ast-val">${JSON.stringify(v)}</span></span>`).join('')}</div>
+    </div>`).join('');
+
+  // ── Animate pipeline flow ─────────────────────────────────
+  document.getElementById('flow-line').classList.remove('in');
+  void document.getElementById('flow-line').offsetWidth;
+  setTimeout(()=>document.getElementById('flow-line').classList.add('in'),100);
+
+  ['pf1','pf2','pf3','pf4'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    el.style.transition='box-shadow .4s, background .4s';
+    setTimeout(()=>{
+      const colors=['var(--c1)','var(--c2)','var(--c3)','var(--c4)'][i];
+      el.style.background=`color-mix(in srgb, ${colors} 15%, transparent)`;
+      el.style.boxShadow=`0 0 18px ${colors}55`;
+    },200+i*180);
+  });
+
+  // ── Trigger stagger animations when page becomes visible ──
+  // We'll stagger after a small delay to ensure DOM is ready
+  setTimeout(()=>{
+    staggerIn('.token-row',null,18);
+    staggerIn('.ast-node',null,40);
+    staggerIn('.sem-item',null,50);
+  },80);
+
+  // ── Navigate to page 1 ────────────────────────────────────
+  goTo(1);
+
+  // ── Reset nav highlighting ────────────────────────────────
+  document.querySelectorAll('.nav-step').forEach((el,i)=>{
+    el.classList.toggle('active',i===1);
+    el.classList.toggle('done',i<1);
+  });
+
+  btn.classList.remove('running');
+  btn.textContent='▶ Run Compiler';
+}
+
+// ── On page switch, re-trigger stagger for that page ──────
+document.querySelectorAll('.nav-step').forEach((el,i)=>{
+  el.addEventListener('click',()=>{
+    setTimeout(()=>{
+      if(i===1)staggerIn('.token-row',null,18);
+      if(i===2)staggerIn('.ast-node',null,40);
+      if(i===3)staggerIn('.sem-item',null,50);
+      if(i===4)staggerIn('#cg-sections .ast-node',null,60);
+    },100);
+  });
+});
+</script>
+</body>
+</html>

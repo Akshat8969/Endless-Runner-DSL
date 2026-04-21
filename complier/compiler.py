@@ -1,36 +1,16 @@
 """
 compiler.py  –  Main entry point for the Game DSL compiler.
-
-Pipeline:
-    Source code (.dsl)
-        │
-        ▼  [Lexer]        lexer.py
-     Tokens
-        │
-        ▼  [Parser]       parser.py
-        AST (ProgramNode)
-        │
-        ▼  [Semantic]     semantic.py
-     Validated AST
-        │
-        ▼  [CodeGen]      codegen.py
-    game_config dict
-        │
-        ▼  [Serialiser]   (here)
-    game_config.json
-
-Usage:
-    python compiler.py game.dsl
-    python compiler.py game.dsl --output path/to/game_config.json
-    python compiler.py game.dsl --verbose     # prints each pipeline stage
-    python compiler.py game.dsl --dump-tokens
-    python compiler.py game.dsl --dump-ast
 """
 
 from __future__ import annotations
 import argparse
 import json
 import sys
+import os
+import webbrowser
+import http.server
+import socketserver
+import subprocess
 from pathlib import Path
 
 from lexer    import tokenize, LexerError
@@ -38,11 +18,9 @@ from parser   import Parser, ParseError
 from semantic import SemanticAnalyser
 from codegen  import CodeGenerator
 
-
 # ─────────────────────────────────────────────
-#  Coloured terminal output (degrades gracefully)
+#  Coloured terminal output
 # ─────────────────────────────────────────────
-
 try:
     import colorama
     colorama.init(autoreset=True)
@@ -55,22 +33,18 @@ try:
 except ImportError:
     R = G = Y = B = W = BO = ""
 
-
 def _banner(title: str):
     print(f"\n{BO}{B}{'─'*55}")
     print(f"  {title}")
     print(f"{'─'*55}{W}")
 
-
 def _ok(msg: str):   print(f"{G}  ✓  {msg}{W}")
 def _warn(msg: str): print(f"{Y}  ⚠  {msg}{W}")
 def _err(msg: str):  print(f"{R}  ✗  {msg}{W}")
 
-
 # ─────────────────────────────────────────────
 #  Pipeline runner
 # ─────────────────────────────────────────────
-
 def compile_dsl(
     source_path: str,
     output_path: str  = "../subway-final/game_config.json",
@@ -78,12 +52,7 @@ def compile_dsl(
     dump_tokens: bool = False,
     dump_ast:    bool = False,
 ) -> dict | None:
-    """
-    Run the full compilation pipeline.
-    Returns the config dict on success, or None on failure.
-    """
 
-    # ── Read source ───────────────────────────
     src = Path(source_path)
     if not src.exists():
         _err(f"Source file not found: {source_path}")
@@ -96,7 +65,6 @@ def compile_dsl(
         _banner("Stage 0 · Source")
         print(code)
 
-    # ── Lex ───────────────────────────────────
     _banner("Stage 1 · Lexer")
     try:
         tokens = tokenize(code)
@@ -105,14 +73,11 @@ def compile_dsl(
         return None
 
     if dump_tokens:
-        print(f"  {'KIND':<20} {'VALUE':<25} {'LINE':>4}  {'COL':>4}")
-        print(f"  {'─'*20} {'─'*25} {'─'*4}  {'─'*4}")
         for tok in tokens:
             print(f"  {tok.kind:<20} {str(tok.value):<25} {tok.line:>4}  {tok.col:>4}")
 
     _ok(f"{len(tokens)} tokens produced")
 
-    # ── Parse ─────────────────────────────────
     _banner("Stage 2 · Parser")
     try:
         tree = Parser(tokens).parse()
@@ -125,29 +90,23 @@ def compile_dsl(
 
     _ok(f"{len(tree.statements)} AST statements generated")
 
-    # ── Semantic analysis ─────────────────────
     _banner("Stage 3 · Semantic Analysis")
     analyser = SemanticAnalyser(tree)
     errors, warnings = analyser.analyse()
 
-    for w in warnings:
-        _warn(str(w))
-    for e in errors:
-        _err(f"[ERROR] {e}")
+    for w in warnings: _warn(str(w))
+    for e in errors:   _err(f"[ERROR] {e}")
 
     if errors:
         _err(f"Compilation failed with {len(errors)} error(s).")
         return None
 
-    _ok("Semantic checks passed" +
-        (f" ({len(warnings)} warning(s))" if warnings else ""))
+    _ok("Semantic checks passed")
 
-    # ── Code generation ───────────────────────
     _banner("Stage 4 · Code Generation")
     config = CodeGenerator(tree).generate()
     _ok("Config dict generated")
 
-    # ── Serialise ─────────────────────────────
     _banner("Stage 5 · Serialise → JSON")
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -156,40 +115,20 @@ def compile_dsl(
         json.dump(config, f, indent=4)
 
     _ok(f"Written to {out.resolve()}")
-
-    if verbose:
-        print()
-        print(json.dumps(config, indent=4))
-
     print(f"\n{BO}{G}  Compilation successful! ✓{W}\n")
     return config
 
-
 # ─────────────────────────────────────────────
-#  CLI
+#  CLI & UI Injector / Server
 # ─────────────────────────────────────────────
-
 def _build_arg_parser() -> argparse.ArgumentParser:
-    ap = argparse.ArgumentParser(
-        prog="compiler",
-        description="Game DSL → JSON compiler",
-    )
-    ap.add_argument("source",
-                    help="Path to the .dsl source file")
-    ap.add_argument("-o", "--output",
-                    default="../subway-final/game_config.json",
-                    help="Output JSON path (default: ../subway-final/game_config.json)")
-    ap.add_argument("-v", "--verbose",
-                    action="store_true",
-                    help="Print source and final JSON")
-    ap.add_argument("--dump-tokens",
-                    action="store_true",
-                    help="Print token table after lexing")
-    ap.add_argument("--dump-ast",
-                    action="store_true",
-                    help="Print AST as JSON after parsing")
+    ap = argparse.ArgumentParser(description="Game DSL → JSON compiler")
+    ap.add_argument("source", help="Path to the .dsl source file")
+    ap.add_argument("-o", "--output", default="../subway-final/game_config.json", help="Output JSON path")
+    ap.add_argument("-v", "--verbose", action="store_true")
+    ap.add_argument("--dump-tokens", action="store_true")
+    ap.add_argument("--dump-ast", action="store_true")
     return ap
-
 
 if __name__ == "__main__":
     args = _build_arg_parser().parse_args()
@@ -200,4 +139,64 @@ if __name__ == "__main__":
         dump_tokens = args.dump_tokens,
         dump_ast    = args.dump_ast,
     )
+    
+    if result is not None:
+        try:
+            # 1. Read the fresh DSL code
+            with open(args.source, "r", encoding="utf-8") as f:
+                raw_dsl = f.read()
+                
+            # 2. Read the base HTML template
+            with open("front.html", "r", encoding="utf-8") as f:
+                html_content = f.read()
+                
+            # 3. Inject the DSL into the placeholder
+            injected_html = html_content.replace("__DSL_CONTENT__", raw_dsl)
+            
+            # 4. Save and launch the live file
+            live_html_path = "front_live.html"
+            with open(live_html_path, "w", encoding="utf-8") as f:
+                f.write(injected_html)
+                
+            browser_path = 'file://' + os.path.realpath(live_html_path)
+            print(f"Launching interactive pipeline: {browser_path}")
+            webbrowser.open(browser_path)
+           # ────────────────────────────────────────────────────────
+            # 5. START BACKGROUND SERVER TO LISTEN FOR GODOT LAUNCH
+            # ────────────────────────────────────────────────────────
+            
+            GODOT_EXE_PATH = r"C:\Users\aksha\Downloads\Godot_v4.6-stable_win64.exe\Godot_v4.6-stable_win64.exe"
+            GODOT_PROJECT_PATH = "../subway-final"
+            
+            class GodotLaunchHandler(http.server.SimpleHTTPRequestHandler):
+                def do_GET(self):
+                    if self.path == '/launch-godot':
+                        self.send_response(200)
+                        self.send_header('Access-Control-Allow-Origin', '*')
+                        self.end_headers()
+                        self.wfile.write(b"Launching!")
+                        
+                        print(f"\n{BO}{B}▶ Browser requested Engine Launch...{W}")
+                        try:
+                            subprocess.Popen([GODOT_EXE_PATH, '--path', GODOT_PROJECT_PATH])
+                            print(f"{G}  Godot launched successfully!{W}")
+                        except FileNotFoundError:
+                            print(f"{R}  ✗ Could not find Godot executable. Please update GODOT_EXE_PATH in compiler.py{W}")
+                    else:
+                        super().do_GET()
+                        
+            PORT = 8080
+            
+            # ---> ADD THIS MAGIC LINE HERE <---
+            socketserver.TCPServer.allow_reuse_address = True
+            
+            print(f"\n{BO}{Y}Compiler is now listening on port {PORT}. Waiting for launch signal...{W}")
+            print(f"{Y}(Press Ctrl+C in this terminal to shut down the compiler when you are done.){W}")
+            
+            with socketserver.TCPServer(("", PORT), GodotLaunchHandler) as httpd:
+                httpd.serve_forever()
+
+        except Exception as e:
+            print(f"Could not launch visualizer or server: {e}")
+
     sys.exit(0 if result is not None else 1)

@@ -2,19 +2,22 @@ extends Node
 
 var player_name = ""
 var coins = 0
-var status = "playing"
+var status = "menu"
 
-func end_game(win, score):
-	coins = score
-	status = "win" if win else "lose"
+# Track if the player won or lost
+var is_winner = false 
 
-	# ✅ UNPAUSE BEFORE CHANGING SCENE
-	get_tree().paused = false
-	get_tree().change_scene_to_file("res://EndScreen.tscn")
-
-# ✅ ADD THIS — Full reset function
-func reset():
-	player_name = ""
-	coins = 0
-	status = "playing"
-	get_tree().paused = false
+# We changed the parameter to 'is_win' to match what player.gd is sending
+func end_game(is_win: bool, final_score: int):
+	status = "game_over"
+	coins = final_score
+	
+	# If player.gd sends 'true', they won. If 'false', they lost!
+	is_winner = is_win 
+	
+	# Freeze the 3D world
+	get_tree().paused = true 
+	
+	# Load the Terminal Crash/Victory Screen
+	var end_screen_scene = load("res://EndScreen.tscn").instantiate()
+	get_tree().root.add_child(end_screen_scene)

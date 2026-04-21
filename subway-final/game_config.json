@@ -1,7 +1,60 @@
 {
-    "speed": 30,
+    "player": {
+        "speed": 35,
+        "lives": 3,
+        "size": 40,
+        "color": "#00ffcc"
+    },
     "speed_increase": {
-        "amount": 4,
-        "interval": 15
+        "amount": 2,
+        "interval": 20
+    },
+    "score": {
+        "increase_by": 1
+    },
+    "obstacle": {
+        "spawn_rate": 3,
+        "speed": 25,
+        "size": 50,
+        "color": "#ff3333"
+    },
+    "coin": {
+        "value": 10,
+        "spawn_rate": 5,
+        "color": "#ffd700"
+    },
+    "powerup": {
+        "spawn_rate": 0.5,
+        "value": 100
+    },
+    "background": {
+        "color": "#1a1a2e",
+        "speed": 10
+    },
+    "difficulty": "medium",
+    "audio": {
+        "sound": true,
+        "music": true
+    },
+    "variables": {
+        "starting_lane": 1,
+        "max_lanes": 3,
+        "lane_width": 10,
+        "jump_force": 15,
+        "roll_duration": 1,
+        "gravity_modifier": 9,
+        "train_chance": 40,
+        "train_min_length": 3,
+        "train_max_length": 8,
+        "coin_cluster_min": 5,
+        "coin_cluster_max": 15,
+        "magnet_radius": 5,
+        "shield_duration": 5,
+        "base_multiplier": 1,
+        "max_multiplier": 10,
+        "starting_coins": 0,
+        "cam_distance": 10,
+        "cam_height": 5,
+        "cam_angle": 15
     }
 }

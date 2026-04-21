@@ -25,6 +25,19 @@ texture = ExtResource("2_d4clo")
 expand_mode = 1
 stretch_mode = 3
 
+[node name="FadeRect" type="ColorRect" parent="." unique_id=1306259230]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="ClickSound" type="AudioStreamPlayer" parent="." unique_id=576501480]
+
+[node name="HoverSound" type="AudioStreamPlayer" parent="." unique_id=429197946]
+
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1684091167]
 layout_mode = 1
 anchors_preset = 15
@@ -59,5 +72,8 @@ vertical_alignment = 1
 layout_mode = 2
 text = "START GAME
 "
+
+[node name="PreviewLabel" type="Label" parent="VBoxContainer" unique_id=365957200]
+layout_mode = 2
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_StartButton_pressed"]

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dkfbef6rm8iw4"]
 
-[ext_resource type="Script" uid="uid://dpu3xt0tcp738" path="res://tracker_manager.gd" id="1_h2yge"]
+[ext_resource type="Script" uid="uid://0ggb8cd2pn01" path="res://main.gd" id="1_4c57u"]
 [ext_resource type="Script" uid="uid://dj632lfj8ts8r" path="res://player.gd" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://bh5fqln07t4r4" path="res://models/END.glb" id="2_4c57u"]
 [ext_resource type="Script" uid="uid://bemlhnlkll1gj" path="res://Finish.gd" id="3_4c57u"]
@@ -58,7 +58,7 @@ radius = 1.8
 
 [node name="Main" type="Node3D" unique_id=1134281598]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7235632)
-script = ExtResource("1_h2yge")
+script = ExtResource("1_4c57u")
 
 [node name="END" parent="." unique_id=466208010 instance=ExtResource("2_4c57u")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2013.5253, 0, 0)
@@ -120,6 +120,20 @@ transform = Transform3D(0.3809524, 0, 0, 0, 0.3809524, 0, 0, 0, 0.3809524, 0.562
 [node name="roll" parent="Player/run" unique_id=66643917 instance=ExtResource("5_7mycd")]
 physics_interpolation_mode = 1
 transform = Transform3D(1.0571429, 0, 0, 0, -4.620918e-08, 1.0571429, 0, -1.0571429, -4.620918e-08, 0.4696297, 0, -4.9196205)
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1256439678]
+
+[node name="CountdownLabel" type="Label" parent="UI" unique_id=708358332]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 90
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1821513032]
 transform = Transform3D(0.8660254, -0.35355338, 0.35355338, 0, 0.70710677, 0.70710677, -0.5, -0.6123724, 0.6123724, 0, 0, 0)

@@ -131,13 +131,13 @@
   const greetingEl = document.getElementById('name-greeting');
   const GREET = ['WELCOME ABOARD, ','HELLO THERE, ','READY TO COMPILE, ','LET\'S BUILD, ','GREAT TO SEE YOU, '];
 
-  // Restore saved name
-  const saved = localStorage.getItem('dsl_user_name') || '';
-  if (saved) { nameInput.value = saved; showGreeting(saved); }
+  // FIX 2: Name always starts empty — clear any previous value on every page load
+  localStorage.removeItem('dsl_user_name');
+  nameInput.value = '';
 
   nameInput.addEventListener('input', () => {
     const n = nameInput.value.trim();
-    localStorage.setItem('dsl_user_name', n);
+    // Don't save on every keystroke — only save on button click after validation passes
     showGreeting(n);
     nameInput.classList.remove('name-error');
     greetingEl.classList.remove('error-msg');
@@ -180,20 +180,28 @@
     return true;
   }
 
-  // Compiler Launch Button
+  // Compiler Launch Button — also saves name so it's available throughout the pipeline
   function enterPipeline(clickedBtn) {
-    if (!isNameValid()) return; // Stop if the name is bad
-    
+    if (!isNameValid()) return;
+
+    const name = nameInput.value.trim();
+    localStorage.setItem('dsl_user_name', name);  // save so all pipeline pages can read it
+
     clickedBtn.innerHTML = '⏳ LOADING...';
     clickedBtn.style.opacity = '0.7';
     clickedBtn.style.pointerEvents = 'none';
     setTimeout(() => { window.location.href = 'pages/index.html'; }, 400);
   }
 
-  // Play Game Button
+  // FIX 1 + 3: Play Game → goes to the last compiler step (codegen page), NOT directly to Godot.
+  // The codegen page will launch Godot and pass the name to the backend.
+  // We also save the name to localStorage HERE so codegen.html can read it.
   function playGame(clickedBtn) {
-    if (!isNameValid()) return; // Stop if the name is bad
-    
+    if (!isNameValid()) return;
+
+    const name = nameInput.value.trim();
+    localStorage.setItem('dsl_user_name', name);  // save so codegen.html can pass it to Godot
+
     clickedBtn.innerHTML = '⏳ LOADING...';
     clickedBtn.style.opacity = '0.7';
     clickedBtn.style.pointerEvents = 'none';

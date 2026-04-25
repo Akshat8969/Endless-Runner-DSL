@@ -3,331 +3,581 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>DSL Compiler — CodeGen</title>
+  <title>Stage 5 · Code Generation — Game DSL Compiler</title>
   <link rel="stylesheet" href="../css/style.css">
   <style>
-    .section-card{background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:8px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .2s;border-left:3px solid var(--section-color,var(--c4))}
-    .section-card:hover{border-color:var(--section-color,var(--c4));background:rgba(64,217,160,.05)}
-    .section-card .sec-name{font-family:'Orbitron',sans-serif;font-size:.75rem;font-weight:700;color:var(--section-color,var(--c4));margin-bottom:6px}
-    .section-card .sec-fields{display:flex;flex-direction:column;gap:3px}
-    .sec-field-row{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.68rem}
-    .sec-key{color:var(--muted)}.sec-val{color:var(--c0)}
-    .copy-btn{position:absolute;top:10px;right:10px;padding:5px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;color:var(--text);cursor:pointer;font-size:.65rem;font-family:'Space Grotesk',sans-serif;font-weight:700;transition:all .2s}
-    .copy-btn:hover{background:rgba(255,255,255,.12);color:var(--white)}
-    .copy-btn.copied{color:var(--c4);border-color:var(--c4)}
-    .metric-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.72rem}
-    .metric-row:last-child{border-bottom:none}
-    .metric-label{color:var(--muted)}.metric-value{color:var(--c4);font-weight:700}
-    .pipeline-summary{display:flex;flex-direction:column;gap:6px}
-    .pip-row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:5px;font-size:.7rem;font-family:'JetBrains Mono',monospace}
-    .pip-row.ok{background:rgba(64,217,160,.06);border:1px solid rgba(64,217,160,.15)}
-    .pip-row.err{background:rgba(255,96,96,.06);border:1px solid rgba(255,96,96,.15)}
-    .pip-icon{font-size:.85rem}
+    body { overflow: auto; }
+    #app { height: auto; min-height: 100vh; }
 
-    /* ── Full Output Modal ── */
-    .output-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);flex-shrink:0;background:rgba(0,0,0,.3)}
-    .output-tab{padding:10px 20px;font-size:.72rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.5px;font-family:'Space Grotesk',sans-serif}
-    .output-tab:hover{color:var(--text)}
-    .output-tab.active{color:var(--c4);border-bottom-color:var(--c4)}
-    .output-panel{display:none;padding:20px;overflow-y:auto;flex:1}
-    .output-panel.active{display:block}
-    .cfg-card{background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:8px;padding:16px;margin-bottom:12px}
-    .cfg-card-title{font-family:'Orbitron',sans-serif;font-size:.75rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:10px}
-    .cfg-card-badge{font-size:.58rem;padding:2px 8px;border-radius:10px;font-weight:700}
-    .cfg-field{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-family:'JetBrains Mono',monospace;font-size:.72rem}
-    .cfg-field:last-child{border-bottom:none}
-    .cfg-field-key{color:var(--muted)}
-    .cfg-field-val{font-weight:700}
-    .godot-prop{background:rgba(0,0,0,.4);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;margin-bottom:6px;font-family:'JetBrains Mono',monospace;font-size:.7rem}
-    .godot-prop .gp-key{color:#7ab0ff}.godot-prop .gp-val{color:#5be8a0;float:right}
-    .godot-prop .gp-path{font-size:.6rem;color:var(--muted);margin-bottom:4px}
-    .diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .diff-card{background:rgba(0,0,0,.3);border-radius:8px;padding:14px;border:1px solid var(--border2)}
-    .diff-title{font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:var(--muted);margin-bottom:10px}
-    .diff-stat{display:flex;justify-content:space-between;padding:5px 0;font-family:'JetBrains Mono',monospace;font-size:.72rem;border-bottom:1px solid rgba(255,255,255,.04)}
-    .diff-stat:last-child{border-bottom:none}
-    .diff-key{color:var(--muted)}.diff-val{color:var(--c4);font-weight:700}
+    /* ── STAGE PROGRESS BAR ── */
+    .stage-nav {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .stage-pip {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: rgba(255,255,255,.02);
+      cursor: pointer;
+      transition: all .25s;
+      text-decoration: none;
+    }
+    .stage-pip:hover { border-color: var(--border2); color: var(--white); }
+    .stage-pip.done  { border-color: rgba(91,141,239,.35); color: var(--c1); background: rgba(91,141,239,.06); }
+    .stage-pip.active {
+      border-color: var(--c4);
+      color: var(--c4);
+      background: rgba(255,200,80,.07);
+      box-shadow: 0 0 18px rgba(255,200,80,.15);
+    }
+    .stage-arrow { color: var(--border2); font-size: .7rem; margin: 0 2px; }
+
+    /* ── SECTION HEADER ── */
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,200,80,.08);
+      border: 1px solid rgba(255,200,80,.25);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--c4);
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: 3px;
+      margin-bottom: 8px;
+    }
+    .section-title span { color: var(--c4); }
+    .section-sub {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    /* ── STATS ROW ── */
+    .stats-row { display: flex; gap: 32px; justify-content: center; margin-bottom: 36px; flex-wrap: wrap; }
+    .stat-item { text-align: center; }
+    .stat-num  { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--white); }
+    .stat-lbl  { font-size: .6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+    .divider   { width: 1px; background: var(--border); align-self: stretch; }
+
+    /* ── JSON VIEWER ── */
+    .json-card {
+      background: rgba(0,0,0,.35);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .json-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: rgba(255,255,255,.025);
+      border-bottom: 1px solid var(--border);
+    }
+    .json-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--c4);
+    }
+    .json-actions { display: flex; gap: 8px; }
+    .json-btn {
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: .65rem;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .json-btn:hover { border-color: var(--c4); color: var(--c4); }
+    .json-body {
+      padding: 20px 22px;
+      max-height: 420px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: .78rem;
+      line-height: 1.75;
+      color: #a8d8a8;
+      white-space: pre;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+    /* JSON syntax colours */
+    .j-key    { color: #7ec8e3; }
+    .j-str    { color: #b5ead7; }
+    .j-num    { color: #f9c74f; }
+    .j-bool   { color: #ff9090; }
+    .j-null   { color: #aaa; }
+    .j-punct  { color: #666; }
+
+    /* ── KEY-VALUE GRID ── */
+    .kv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .kv-card {
+      background: rgba(255,255,255,.025);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: border-color .2s;
+    }
+    .kv-card:hover { border-color: var(--c4); }
+    .kv-key   { font-size: .6rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .kv-val   { font-family: 'Orbitron', sans-serif; font-size: .9rem; font-weight: 700; color: var(--c4); }
+
+    /* ── PLAYER NAME BANNER ── */
+    .player-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: rgba(255,200,80,.06);
+      border: 1px solid rgba(255,200,80,.2);
+      border-radius: 10px;
+      padding: 14px 24px;
+      margin-bottom: 28px;
+    }
+    .player-label { font-size: .62rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+    .player-name  { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 900; color: var(--c4); letter-spacing: 3px; }
+    .player-icon  { font-size: 1.4rem; }
+
+    /* ── SUCCESS BADGE ── */
+    .success-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0,200,100,.06);
+      border: 1px solid rgba(0,200,100,.2);
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin-bottom: 28px;
+    }
+    .success-icon { font-size: 1.2rem; }
+    .success-text { font-size: .78rem; color: #7dffb3; line-height: 1.5; }
+    .success-text strong { color: #a0ffcc; display: block; font-family: 'Orbitron', sans-serif; font-size: .65rem; letter-spacing: 1.5px; margin-bottom: 2px; }
+
+    /* ── LAUNCH BUTTON ── */
+    .launch-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .btn-launch {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, rgba(255,200,80,.15), rgba(255,160,40,.08));
+      border: 1.5px solid rgba(255,200,80,.5);
+      border-radius: 10px;
+      color: var(--c4);
+      font-family: 'Orbitron', sans-serif;
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      padding: 16px 36px;
+      cursor: pointer;
+      transition: all .3s;
+      box-shadow: 0 0 24px rgba(255,200,80,.1);
+    }
+    .btn-launch:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(255,200,80,.25), rgba(255,160,40,.15));
+      border-color: var(--c4);
+      box-shadow: 0 0 40px rgba(255,200,80,.25);
+      transform: translateY(-2px);
+    }
+    .btn-launch:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,.03);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--muted);
+      font-family: 'Orbitron', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 16px 28px;
+      cursor: pointer;
+      transition: all .25s;
+      text-decoration: none;
+    }
+    .btn-back:hover { border-color: var(--border2); color: var(--white); }
+
+    /* ── STATUS LOG ── */
+    .status-log {
+      margin-top: 20px;
+      background: rgba(0,0,0,.3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-family: 'Courier New', monospace;
+      font-size: .72rem;
+      color: var(--muted);
+      min-height: 48px;
+      line-height: 1.6;
+      display: none;
+    }
+    .status-log.visible { display: block; }
+    .log-ok   { color: #7dffb3; }
+    .log-err  { color: #ff9090; }
+    .log-info { color: var(--c1); }
+
+    /* ── FOOTER ── */
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .footer-tag { font-size: .65rem; color: var(--muted); letter-spacing: .5px; }
+    .footer-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border2); }
   </style>
 </head>
 <body>
 <canvas id="stars"></canvas>
-<div id="app">
-  <nav>
-    <div class="logo">DSL<span>//</span>COMPILE</div>
-    <div class="nav-steps">
-      <a href="../welcome.html" class="nav-step" style="--stage-color:#666;font-size:.65rem">⌂ Home</a>
-      <span class="arrow">›</span>
-      <a href="index.html" class="nav-step done" style="--stage-color:var(--c0)"><span class="num">1</span> Source</a><span class="arrow">›</span>
-      <a href="lexer.html" class="nav-step done" style="--stage-color:var(--c1)"><span class="num">2</span> Lexer</a><span class="arrow">›</span>
-      <a href="parser.html" class="nav-step done" style="--stage-color:var(--c2)"><span class="num">3</span> Parser</a><span class="arrow">›</span>
-      <a href="semantic.html" class="nav-step done" style="--stage-color:var(--c3)"><span class="num">4</span> Semantic</a><span class="arrow">›</span>
-      <a href="codegen.html" class="nav-step active" style="--stage-color:var(--c4)"><span class="num">5</span> CodeGen</a>
+
+<div id="app" style="align-items:flex-start; justify-content:center; padding: 60px 40px;">
+  <div class="welcome-grid"></div>
+  <div class="welcome-glow"></div>
+
+  <div class="welcome-content" style="max-width:960px; width:100%">
+
+    <!-- ── STAGE NAV ── -->
+    <nav class="stage-nav">
+      <a class="stage-pip done" href="index.html">01 · SOURCE</a>
+      <span class="stage-arrow">›</span>
+      <a class="stage-pip done" href="lexer.html">02 · LEXER</a>
+      <span class="stage-arrow">›</span>
+      <a class="stage-pip done" href="parser.html">03 · PARSER</a>
+      <span class="stage-arrow">›</span>
+      <a class="stage-pip done" href="semantic.html">04 · SEMANTIC</a>
+      <span class="stage-arrow">›</span>
+      <span class="stage-pip active">05 · CODEGEN</span>
+    </nav>
+
+    <!-- ── HEADER ── -->
+    <div style="text-align:center; margin-bottom: 36px;">
+      <div class="section-badge">⚙️ &nbsp; STAGE 05 · CODE GENERATION</div>
+      <h1 class="section-title">GENERATE <span>GAME CONFIG</span></h1>
+      <p class="section-sub">
+        The validated AST has been transformed into a structured JSON configuration.<br>
+        Your game is ready to launch inside the Godot 4 engine.
+      </p>
     </div>
-    <div class="wiz-controls">
-      <button class="wiz-btn" onclick="openVisualizer()" style="border-color:var(--c4);color:var(--c4)">🔍 Full Output</button>
-      <a href="semantic.html" class="wiz-btn">← Prev</a>
-      <a href="../end.html" class="wiz-btn primary" id="finish-btn">🎮 Play Game →</a>
-    </div>
-  </nav>
 
-  <div id="pages" style="--stage-color:var(--c4)">
-    <div class="page-header">
-      <div class="page-num">05</div>
-      <div class="page-titles"><h2>CODE GENERATION</h2><p>Validated AST → game_config.json · ready for Godot 4.2+</p></div>
-      <div style="margin-left:auto;display:flex;gap:10px;align-items:center">
-        <span class="phase-tag" style="--stage-color:var(--c4)" id="gen-status-tag">GENERATING...</span>
-      </div>
-    </div>
-
-    <div class="content-grid" style="grid-template-columns:0.9fr 1.8fr 0.8fr;flex:1;min-height:0">
-      <div class="card">
-        <div class="card-head"><span class="card-head-title">Config Sections</span><span class="card-badge" id="sections-count">0 sections</span></div>
-        <div class="card-body" id="cg-sections" style="background:rgba(0,0,0,.1);overflow-y:auto"><div class="ph">Loading...</div></div>
-      </div>
-
-      <div class="card" style="position:relative">
-        <div class="card-head"><span class="card-head-title">game_config.json</span><span class="card-badge">OUTPUT</span></div>
-        <button class="copy-btn" id="copy-btn" onclick="copyJSON()">⎘ Copy</button>
-        <div class="card-body" style="background:#070a0f;overflow-y:auto">
-          <pre class="json-out" id="json-out"><span style="color:var(--muted);font-style:italic">Generating output...</span></pre>
-        </div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:14px;overflow:hidden">
-        <div class="card" style="flex-shrink:0">
-          <div class="card-head"><span class="card-head-title">Payload Metrics</span></div>
-          <div class="card-body" style="background:rgba(0,0,0,.2)">
-            <div style="text-align:center;margin-bottom:14px">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Godot_icon.svg" style="width:32px;opacity:.7;margin-bottom:6px" alt="Godot"/>
-              <div style="font-family:'Orbitron',sans-serif;font-weight:700;font-size:.85rem;color:var(--white)">Godot 4.2+</div>
-            </div>
-            <div class="metric-row"><span class="metric-label">Format</span><span class="metric-value">JSON</span></div>
-            <div class="metric-row"><span class="metric-label">Size</span><span class="metric-value" id="payload-size">0 B</span></div>
-            <div class="metric-row"><span class="metric-label">Keys</span><span class="metric-value" id="payload-keys">0</span></div>
-            <div class="metric-row"><span class="metric-label">Sections</span><span class="metric-value" id="payload-sections">0</span></div>
-            <div class="metric-row"><span class="metric-label">Status</span><span class="metric-value" id="payload-status" style="color:var(--muted)">—</span></div>
-          </div>
-        </div>
-        <div class="card" style="flex:1;min-height:0">
-          <div class="card-head"><span class="card-head-title">Pipeline Summary</span></div>
-          <div class="card-body" style="background:rgba(0,0,0,.2);overflow-y:auto"><div class="pipeline-summary" id="pipeline-summary"></div></div>
-        </div>
+    <!-- ── PLAYER BANNER ── -->
+    <div class="player-banner">
+      <span class="player-icon">👤</span>
+      <div>
+        <div class="player-label">Pilot Assigned</div>
+        <div class="player-name" id="player-name-display">———</div>
       </div>
     </div>
-  </div>
 
-  <!-- FULL OUTPUT MODAL with tabs -->
-  <div id="vis-modal" class="modal-backdrop">
-    <div class="modal-window" style="--stage-color:var(--c4)">
-      <div class="modal-header">
-        <div class="modal-title">⚙ CODEGEN — Full Analysis & Output</div>
-        <button class="modal-close" onclick="closeVisualizer()">✕</button>
-      </div>
-      <div style="display:flex;flex-direction:column;height:calc(100% - 57px)">
-        <div class="output-tabs">
-          <div class="output-tab active" onclick="switchTab('json')">📄 JSON Config</div>
-          <div class="output-tab" onclick="switchTab('godot')">🎮 Godot Props</div>
-          <div class="output-tab" onclick="switchTab('diff')">📊 Config Stats</div>
-          <div class="output-tab" onclick="switchTab('summary')">✅ Pipeline</div>
-        </div>
-        <div id="panel-json" class="output-panel active" style="background:var(--bg)">
-          <pre class="json-out" id="modal-json" style="font-size:.85rem;line-height:1.8"></pre>
-        </div>
-        <div id="panel-godot" class="output-panel" style="background:var(--bg)">
-          <p style="font-size:.72rem;color:var(--muted);margin-bottom:16px;line-height:1.6">How the <span style="color:var(--c4)">game_config.json</span> maps to Godot 4 properties. Load this file with <code style="color:#7ab0ff;font-family:'JetBrains Mono',monospace">FileAccess.open()</code> in your game scripts.</p>
-          <div id="godot-props"></div>
-        </div>
-        <div id="panel-diff" class="output-panel" style="background:var(--bg)">
-          <div class="diff-grid" id="diff-stats"></div>
-        </div>
-        <div id="panel-summary" class="output-panel" style="background:var(--bg)">
-          <div id="modal-pipeline-detail"></div>
-        </div>
+    <!-- ── SUCCESS BAR ── -->
+    <div class="success-bar">
+      <span class="success-icon">✅</span>
+      <div class="success-text">
+        <strong>COMPILATION SUCCESSFUL</strong>
+        All 5 stages passed. The AST has been serialised to <code>game_config.json</code>
+        and is ready for Godot to consume. Click Launch Game to start playing.
       </div>
     </div>
+
+    <!-- ── STATS ── -->
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-num" id="stat-keys">—</div>
+        <div class="stat-lbl">Config Keys</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stat-item">
+        <div class="stat-num" id="stat-stmts">—</div>
+        <div class="stat-lbl">DSL Statements</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stat-item">
+        <div class="stat-num" id="stat-tokens">—</div>
+        <div class="stat-lbl">Tokens</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stat-item">
+        <div class="stat-num">JSON</div>
+        <div class="stat-lbl">Output Format</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stat-item">
+        <div class="stat-num">Godot 4</div>
+        <div class="stat-lbl">Target Engine</div>
+      </div>
+    </div>
+
+    <!-- ── KEY-VALUE QUICK VIEW ── -->
+    <div class="kv-grid" id="kv-grid">
+      <!-- filled by JS -->
+    </div>
+
+    <!-- ── JSON VIEWER ── -->
+    <div class="json-card">
+      <div class="json-topbar">
+        <span class="json-title">📄 &nbsp; game_config.json</span>
+        <div class="json-actions">
+          <button class="json-btn" onclick="copyJson()">⎘ COPY</button>
+          <button class="json-btn" onclick="downloadJson()">↓ DOWNLOAD</button>
+        </div>
+      </div>
+      <div class="json-body" id="json-output">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- ── LAUNCH BUTTONS ── -->
+    <div class="launch-row">
+      <a class="btn-back" href="semantic.html">← BACK TO SEMANTIC</a>
+      <button class="btn-launch" id="launch-btn" onclick="launchGodot(this)">
+        <span>🎮</span> LAUNCH GAME
+      </button>
+    </div>
+
+    <!-- ── STATUS LOG ── -->
+    <div class="status-log" id="status-log"></div>
+
+    <!-- ── FOOTER ── -->
+    <div class="footer-row">
+      <span class="footer-tag">Lexer → Parser → Semantic → <strong style="color:var(--c4)">CodeGen ✓</strong></span>
+      <div class="footer-dot"></div>
+      <span class="footer-tag">Targets Godot 4.2+</span>
+      <div class="footer-dot"></div>
+      <span class="footer-tag">Game DSL v1.0</span>
+    </div>
+
   </div>
 </div>
 
 <script src="../js/compiler.js"></script>
 <script>
-  let generatedJSON='', generatedCfg={};
+// ─────────────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────────────
+const log = document.getElementById('status-log');
 
-  function switchTab(tab){
-    document.querySelectorAll('.output-tab').forEach((t,i)=>{t.classList.toggle('active',['json','godot','diff','summary'][i]===tab)});
-    document.querySelectorAll('.output-panel').forEach((p,i)=>{p.classList.toggle('active',['json','godot','diff','summary'][i]===tab)});
+function appendLog(msg, cls = '') {
+  log.classList.add('visible');
+  const line = document.createElement('div');
+  if (cls) line.className = cls;
+  line.textContent = msg;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// PLAYER NAME  — read from localStorage (set by welcome.html on click)
+// ─────────────────────────────────────────────────────────────────────
+const playerName = (localStorage.getItem('dsl_user_name') || '').trim() || 'Player';
+document.getElementById('player-name-display').textContent = playerName.toUpperCase();
+
+// ─────────────────────────────────────────────────────────────────────
+// BUILD CONFIG FROM DSL  (uses compiler.js functions: getCode, tokenize, parse, generate)
+// ─────────────────────────────────────────────────────────────────────
+let generatedConfig = {};
+let rawJson = '{}';
+
+try {
+  const src = getCode();                     // from compiler.js — reads the DSL source
+  if (src && src.trim()) {
+    const toks   = tokenize(src);
+    const { statements } = parse(toks);
+    generatedConfig = generate(statements);  // compiler.js code-gen function
   }
+} catch(e) {
+  appendLog('⚠ Could not re-generate from DSL: ' + e.message, 'log-err');
+}
 
-  function hlJSON(obj){
-    return JSON.stringify(obj,null,2)
-      .replace(/("(?:[^"\\]|\\.)*")\s*:/g,'<span class="jk">$1</span>:')
-      .replace(/:\s*("(?:[^"\\]|\\.)*")/g,': <span class="js">$1</span>')
-      .replace(/:\s*(\d+(?:\.\d+)?)/g,': <span class="jn">$1</span>')
-      .replace(/:\s*(true|false)/g,': <span class="jb">$1</span>')
-      .replace(/[{}\[\]]/g,m=>`<span class="jbrace">${m}</span>`);
-  }
+// Inject player name into the config object
+generatedConfig.player_name = playerName;
 
-  function copyJSON(){
-    navigator.clipboard.writeText(generatedJSON).then(()=>{
-      const btn=document.getElementById('copy-btn');
-      btn.textContent='✓ Copied!';btn.classList.add('copied');
-      setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied')},2000);
-    });
-  }
+rawJson = JSON.stringify(generatedConfig, null, 2);
 
-  function buildGodotProps(cfg){
-    const GODOT_MAP = {
-      'player.speed':      { path:'Player.gd → move_speed', desc:'Base movement speed' },
-      'player.lives':      { path:'GameManager.gd → max_lives', desc:'Starting life count' },
-      'player.size':       { path:'player.tscn → CollisionShape2D.scale', desc:'Player hitbox size' },
-      'player.color':      { path:'player.tscn → Sprite2D.modulate', desc:'Player tint color' },
-      'obstacle.spawn_rate':{ path:'ObstacleSpawner.gd → spawn_interval', desc:'Seconds between spawns' },
-      'obstacle.speed':    { path:'Obstacle.gd → speed', desc:'Obstacle travel speed' },
-      'coin.value':        { path:'Coin.gd → point_value', desc:'Points per coin collected' },
-      'coin.spawn_rate':   { path:'CoinSpawner.gd → spawn_interval', desc:'Seconds between coin spawns' },
-      'background.speed':  { path:'Background.gd → scroll_speed', desc:'Parallax scroll speed' },
-      'difficulty':        { path:'GameManager.gd → difficulty_preset', desc:'Difficulty tier' },
-      'audio.sound':       { path:'AudioManager.gd → sfx_enabled', desc:'Sound effects toggle' },
-      'audio.music':       { path:'AudioManager.gd → music_enabled', desc:'Music track toggle' },
-    };
-    const sectionColors={'player':'#5b8def','obstacle':'#ff9090','coin':'#ffd700','audio':'#5be8a0','background':'#9070e8','difficulty':'#f0a040'};
-    let html='';
-    Object.entries(cfg).forEach(([sec, val])=>{
-      const col=sectionColors[sec]||'var(--c4)';
-      html+=`<div class="cfg-card"><div class="cfg-card-title" style="color:${col}">
-        <span>${sec.toUpperCase()}</span>
-        <span class="cfg-card-badge" style="background:${col}22;color:${col}">${typeof val==='object'?Object.keys(val).length+' props':'1 prop'}</span>
-      </div>`;
-      if (typeof val==='object'&&val!==null){
-        Object.entries(val).forEach(([k,v])=>{
-          const mapKey=`${sec}.${k}`;
-          const m=GODOT_MAP[mapKey];
-          html+=`<div class="godot-prop">
-            <div class="gp-path">${m?m.path:`${sec}.gd → ${k}`}</div>
-            <span class="gp-key">${k}</span><span class="gp-val">${JSON.stringify(v)}</span>
-          </div>`;
-        });
-      } else {
-        const m=GODOT_MAP[sec];
-        html+=`<div class="godot-prop"><div class="gp-path">${m?m.path:sec+'.gd'}</div>
-          <span class="gp-key">${sec}</span><span class="gp-val">${JSON.stringify(val)}</span></div>`;
-      }
-      html+='</div>';
-    });
-    return html||'<div class="ph">No config generated.</div>';
-  }
+// ─────────────────────────────────────────────────────────────────────
+// STATS
+// ─────────────────────────────────────────────────────────────────────
+(function fillStats() {
+  const keys = Object.keys(generatedConfig).length;
+  document.getElementById('stat-keys').textContent = keys;
 
-  function buildDiffStats(cfg, tokens, stmts, semErrs, semWarns){
-    const numericVals=[];
-    JSON.stringify(cfg,(k,v)=>{if(typeof v==='number'&&k!=='')numericVals.push(v);return v;});
-    const boolVals=[];
-    JSON.stringify(cfg,(k,v)=>{if(typeof v==='boolean')boolVals.push(v);return v;});
-    return `<div class="diff-grid">
-      <div class="diff-card">
-        <div class="diff-title">Token Analysis</div>
-        <div class="diff-stat"><span class="diff-key">Total Tokens</span><span class="diff-val">${tokens.filter(t=>t.kind!=='EOF').length}</span></div>
-        <div class="diff-stat"><span class="diff-key">Keywords</span><span class="diff-val">${tokens.filter(t=>KEYWORDS.has(t.kind)).length}</span></div>
-        <div class="diff-stat"><span class="diff-key">Literals</span><span class="diff-val">${tokens.filter(t=>['NUMBER','FLOAT','STRING','BOOL'].includes(t.kind)).length}</span></div>
-        <div class="diff-stat"><span class="diff-key">Identifiers</span><span class="diff-val">${tokens.filter(t=>t.kind==='ID').length}</span></div>
-      </div>
-      <div class="diff-card">
-        <div class="diff-title">AST Statistics</div>
-        <div class="diff-stat"><span class="diff-key">Total Statements</span><span class="diff-val">${stmts.length}</span></div>
-        <div class="diff-stat"><span class="diff-key">Unique Node Types</span><span class="diff-val">${new Set(stmts.map(s=>s.type)).size}</span></div>
-        <div class="diff-stat"><span class="diff-key">SET Variables</span><span class="diff-val">${stmts.filter(s=>s.type==='set_var').length}</span></div>
-        <div class="diff-stat"><span class="diff-key">Semantic Warnings</span><span class="diff-val" style="color:${semWarns.length?'var(--c3)':'var(--c4)'}">${semWarns.length}</span></div>
-      </div>
-      <div class="diff-card">
-        <div class="diff-title">Config Output</div>
-        <div class="diff-stat"><span class="diff-key">Sections</span><span class="diff-val">${Object.keys(cfg).length}</span></div>
-        <div class="diff-stat"><span class="diff-key">Numeric Values</span><span class="diff-val">${numericVals.length}</span></div>
-        <div class="diff-stat"><span class="diff-key">Boolean Values</span><span class="diff-val">${boolVals.length}</span></div>
-        <div class="diff-stat"><span class="diff-key">JSON Bytes</span><span class="diff-val">${new TextEncoder().encode(JSON.stringify(cfg,null,2)).length} B</span></div>
-      </div>
-      <div class="diff-card">
-        <div class="diff-title">Value Ranges</div>
-        ${numericVals.length?`
-        <div class="diff-stat"><span class="diff-key">Min Value</span><span class="diff-val">${Math.min(...numericVals)}</span></div>
-        <div class="diff-stat"><span class="diff-key">Max Value</span><span class="diff-val">${Math.max(...numericVals)}</span></div>
-        <div class="diff-stat"><span class="diff-key">Average</span><span class="diff-val">${(numericVals.reduce((a,b)=>a+b,0)/numericVals.length).toFixed(1)}</span></div>
-        `:'<div class="diff-stat"><span class="diff-key">No numeric values</span></div>'}
-        <div class="diff-stat"><span class="diff-key">Compile Status</span><span class="diff-val" style="color:${semErrs.length?'#ff6060':'var(--c4)'}">${semErrs.length?'ERROR':'OK'}</span></div>
-      </div>
-    </div>`;
-  }
+  try {
+    const src   = getCode();
+    const toks  = tokenize(src);
+    const { statements } = parse(toks);
+    document.getElementById('stat-stmts').textContent  = statements.length;
+    document.getElementById('stat-tokens').textContent = toks.filter(t => t.kind !== 'EOF').length;
+  } catch(_) {}
+})();
 
-  document.addEventListener('DOMContentLoaded', ()=>{
-    const code=getCode();
-    if(!code){document.getElementById('cg-sections').innerHTML='<div class="ph">No code found.</div>';return;}
+// ─────────────────────────────────────────────────────────────────────
+// KEY-VALUE QUICK CARDS  (show top-level numeric/string values)
+// ─────────────────────────────────────────────────────────────────────
+(function fillKvGrid() {
+  const grid = document.getElementById('kv-grid');
+  const skip = new Set(['player_name']); // already shown in banner
 
-    const tokens=tokenize(code);
-    const {statements,errors:parseErrs}=parse(tokens);
-    const {errors:semErrs,warnings:semWarns}=analyse(statements);
-    const hasErrors=parseErrs.length>0||semErrs.length>0;
-    const cfg=!hasErrors?codegen(statements):{};
-    const sections=Object.keys(cfg);
+  // Prioritised keys to always show first if they exist
+  const priority = [
+    'player_speed','player_lives','player_size',
+    'obstacle_speed','obstacle_spawn_rate','coin_value',
+    'coin_spawn_rate','powerup_spawn_rate','background_speed',
+    'difficulty','max_lanes','starting_lane'
+  ];
 
-    const tag=document.getElementById('gen-status-tag');
-    if(hasErrors){tag.textContent='✗ FAILED';tag.style.color='#ff6060';tag.style.borderColor='rgba(255,96,96,.3)';tag.style.background='rgba(255,96,96,.1)'}
-    else{tag.textContent='✓ SUCCESS'}
+  const allKeys = [
+    ...priority.filter(k => k in generatedConfig),
+    ...Object.keys(generatedConfig).filter(k => !priority.includes(k) && !skip.has(k))
+  ].slice(0, 18); // max 18 cards
 
-    const secColors={player:'#5b8def',speed_increase:'#e25b8e',score:'#a07ee8',obstacle:'#ff9090',coin:'#ffd700',powerup:'#40d9a0',background:'#9070e8',difficulty:'#f0a040',audio:'#5be8a0',variables:'#7ab0ff'};
-    document.getElementById('sections-count').textContent=`${sections.length} sections`;
-    document.getElementById('cg-sections').innerHTML=sections.length?sections.map(k=>{
-      const col=secColors[k]||'var(--c4)';
-      const fields=cfg[k]&&typeof cfg[k]==='object'?Object.entries(cfg[k]):[['value',cfg[k]]];
-      return `<div class="section-card" style="--section-color:${col}">
-        <div class="sec-name">${k.toUpperCase()}</div>
-        <div class="sec-fields">${fields.map(([f,v])=>`<div class="sec-field-row"><span class="sec-key">${f}</span><span class="sec-val">${JSON.stringify(v)}</span></div>`).join('')}</div>
-      </div>`;
-    }).join(''):'<div class="ph">Fix errors to generate output.</div>';
-
-    if(sections.length>0){
-      generatedCfg=cfg; generatedJSON=JSON.stringify(cfg,null,2);
-      document.getElementById('json-out').innerHTML=hlJSON(cfg);
-    } else {
-      document.getElementById('json-out').innerHTML=`<span style="color:#ff6060">// Fix ${parseErrs.length+semErrs.length} error(s) to generate JSON output.</span>`;
-    }
-
-    const bytes=new TextEncoder().encode(generatedJSON).length;
-    document.getElementById('payload-size').textContent=bytes>0?`${bytes} B`:'0 B';
-    let keysCount=0;JSON.stringify(cfg,(k,v)=>{if(k!=='')keysCount++;return v;});
-    document.getElementById('payload-keys').textContent=keysCount;
-    document.getElementById('payload-sections').textContent=sections.length;
-    const statusEl=document.getElementById('payload-status');
-    if(hasErrors){statusEl.textContent='FAILED';statusEl.style.color='#ff6060'}
-    else if(semWarns.length>0){statusEl.textContent='WARNINGS';statusEl.style.color='var(--c3)'}
-    else{statusEl.textContent='CLEAN';statusEl.style.color='var(--c4)'}
-
-    const pipelines=[
-      {name:'Lexer',ok:true,detail:`${tokens.filter(t=>t.kind!=='EOF').length} tokens produced`},
-      {name:'Parser',ok:parseErrs.length===0,detail:parseErrs.length===0?`${statements.length} AST nodes`:`${parseErrs.length} error(s)`},
-      {name:'Semantic',ok:semErrs.length===0,detail:semErrs.length===0?(semWarns.length>0?`${semWarns.length} warning(s)`:'All checks passed'):`${semErrs.length} error(s)`},
-      {name:'CodeGen',ok:sections.length>0,detail:sections.length>0?`${sections.length} sections emitted`:'Blocked by errors'},
-    ];
-    document.getElementById('pipeline-summary').innerHTML=pipelines.map(p=>`
-      <div class="pip-row ${p.ok?'ok':'err'}"><span class="pip-icon">${p.ok?'✓':'✗'}</span>
-        <div><div style="font-weight:700;color:${p.ok?'var(--c4)':'#ff9090'}">${p.name}</div>
-        <div style="font-size:.62rem;color:var(--muted);margin-top:1px">${p.detail}</div></div>
-      </div>`).join('');
-
-    // Modal panels
-    document.getElementById('modal-json').innerHTML=sections.length>0?hlJSON(cfg):`<span style="color:#ff6060">// Fix errors in earlier stages.</span>`;
-    document.getElementById('godot-props').innerHTML=buildGodotProps(cfg);
-    document.getElementById('diff-stats').outerHTML=`<div id="diff-stats">${buildDiffStats(cfg,tokens,statements,semErrs,semWarns)}</div>`;
-    document.getElementById('modal-pipeline-detail').innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">
-      ${pipelines.map(p=>`<div class="pip-row ${p.ok?'ok':'err'}" style="padding:14px 16px">
-        <span style="font-size:1.2rem">${p.ok?'✓':'✗'}</span>
-        <div style="flex:1"><div style="font-size:.85rem;font-weight:700;color:${p.ok?'var(--c4)':'#ff9090'};margin-bottom:4px">${p.name}</div>
-        <div style="font-size:.72rem;color:var(--muted)">${p.detail}</div></div>
-        <div style="font-size:.7rem;padding:4px 10px;border-radius:10px;background:${p.ok?'rgba(64,217,160,.15)':'rgba(255,96,96,.15)'};color:${p.ok?'var(--c4)':'#ff9090'};font-weight:700">${p.ok?'PASS':'FAIL'}</div>
-      </div>`).join('')}
-      <div style="margin-top:16px;padding:16px;background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:8px;font-size:.72rem;color:var(--muted);line-height:1.7">
-        <strong style="color:var(--white);font-family:'Orbitron',sans-serif;font-size:.7rem">NEXT STEPS</strong><br/>
-        Copy the JSON output and place it in your Godot project as <code style="color:#7ab0ff">res://game_config.json</code>.<br/>
-        Then load it in your main scene with <code style="color:#7ab0ff">var cfg = JSON.parse_string(FileAccess.open("res://game_config.json", FileAccess.READ).get_as_text())</code>
-      </div>
-    </div>`;
+  allKeys.forEach(key => {
+    const val  = generatedConfig[key];
+    const card = document.createElement('div');
+    card.className = 'kv-card';
+    card.innerHTML = `
+      <div class="kv-key">${key.replace(/_/g,' ')}</div>
+      <div class="kv-val">${val}</div>`;
+    grid.appendChild(card);
   });
+})();
+
+// ─────────────────────────────────────────────────────────────────────
+// SYNTAX-HIGHLIGHTED JSON VIEWER
+// ─────────────────────────────────────────────────────────────────────
+(function renderJson() {
+  const el = document.getElementById('json-output');
+  const highlighted = rawJson.replace(
+    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?|[{}\[\],:])/g,
+    match => {
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) return `<span class="j-key">${match}</span>`;
+        return `<span class="j-str">${match}</span>`;
+      }
+      if (/true|false/.test(match)) return `<span class="j-bool">${match}</span>`;
+      if (/null/.test(match))       return `<span class="j-null">${match}</span>`;
+      if (/[{}\[\],:]/.test(match)) return `<span class="j-punct">${match}</span>`;
+      return `<span class="j-num">${match}</span>`;
+    }
+  );
+  el.innerHTML = highlighted;
+})();
+
+// ─────────────────────────────────────────────────────────────────────
+// COPY / DOWNLOAD JSON
+// ─────────────────────────────────────────────────────────────────────
+function copyJson() {
+  navigator.clipboard.writeText(rawJson).then(() => {
+    appendLog('✓ JSON copied to clipboard.', 'log-ok');
+  }).catch(() => {
+    appendLog('⚠ Clipboard not available — copy from the viewer above.', 'log-err');
+  });
+}
+
+function downloadJson() {
+  const blob = new Blob([rawJson], { type: 'application/json' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = 'game_config.json';
+  a.click();
+  appendLog('↓ game_config.json downloaded.', 'log-ok');
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// LAUNCH GODOT  — calls the Python backend on port 8080
+// ─────────────────────────────────────────────────────────────────────
+function launchGodot(btn) {
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> LAUNCHING...';
+
+  appendLog(`▶ Sending player name "${playerName}" to backend…`, 'log-info');
+  appendLog('▶ Calling http://localhost:8080/launch-godot ...', 'log-info');
+
+  fetch(`http://localhost:8080/launch-godot?name=${encodeURIComponent(playerName)}`)
+    .then(res => {
+      if (!res.ok) throw new Error(`Backend returned HTTP ${res.status}`);
+      return res.text();
+    })
+    .then(() => {
+      btn.innerHTML = '<span>✓</span> GAME LAUNCHED!';
+      btn.style.borderColor  = '#7dffb3';
+      btn.style.color        = '#7dffb3';
+      btn.style.background   = 'rgba(0,200,100,.1)';
+      appendLog(`✓ Godot launched! Playing as: ${playerName}`, 'log-ok');
+      appendLog('  player_name has been injected into game_config.json.', 'log-ok');
+
+      // Poll for Godot closing — redirect back to welcome when it does
+      pollGodotClosed();
+    })
+    .catch(err => {
+      btn.disabled = false;
+      btn.innerHTML = '<span>🎮</span> LAUNCH GAME';
+      appendLog('✗ Could not reach backend: ' + err.message, 'log-err');
+      appendLog('  Make sure compiler.py is running:  python compiler.py game.dsl', 'log-err');
+    });
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// POLL  — when Godot closes, go back to welcome.html
+// ─────────────────────────────────────────────────────────────────────
+function pollGodotClosed() {
+  fetch('http://localhost:8080/godot-closed')
+    .then(r => r.json())
+    .then(d => {
+      if (d.closed) {
+        appendLog('⏎ Godot closed — returning to welcome page…', 'log-info');
+        setTimeout(() => { window.location.href = '../welcome.html'; }, 1200);
+      }
+    })
+    .catch(() => {});   // backend might not have this endpoint — silently ignore
+}
 </script>
 </body>
 </html>

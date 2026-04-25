@@ -103,7 +103,6 @@ func start_countdown():
 		countdown_label.scale = Vector2.ZERO 
 		
 		var ready_tween = get_tree().create_tween()
-		# CHANGED: Vector2(2.0, 2.0) makes it pop to twice its normal size!
 		ready_tween.tween_property(countdown_label, "scale", Vector2(0.7, 0.7), 0.5)\
 			.set_trans(Tween.TRANS_ELASTIC)\
 			.set_ease(Tween.EASE_OUT)
@@ -248,9 +247,11 @@ func load_config():
 	if data == null:
 		return
 
-	if "speed" in data and not initial_speed_set:
-		forward_speed = data["speed"]
-		initial_speed_set = true
+	if "player" in data:
+		var player_data = data["player"]
+		if "speed" in player_data and not initial_speed_set:
+			forward_speed = player_data["speed"]
+			initial_speed_set = true
 
 	if "speed_increase" in data:
 		var si = data["speed_increase"]

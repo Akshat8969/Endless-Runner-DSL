@@ -55,13 +55,6 @@ theme_override_font_sizes/font_size = 50
 text = "COIN RUNNER"
 horizontal_alignment = 1
 
-[node name="NameInput" type="LineEdit" parent="VBoxContainer" unique_id=481915748]
-layout_mode = 2
-theme_override_constants/caret_width = 1
-theme_override_constants/minimum_character_width = 4
-placeholder_text = "Enter Your Name"
-alignment = 1
-
 [node name="ErrorText" type="Label" parent="VBoxContainer" unique_id=83983071]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.69973004, 0, 0.24098954, 1)

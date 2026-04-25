@@ -56,5 +56,6 @@
         "cam_distance": 10,
         "cam_height": 5,
         "cam_angle": 15
-    }
+    },
+    "player_name": "Player"
 }

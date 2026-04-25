@@ -72,8 +72,12 @@ func print_terminal():
 # BUTTON SIGNALS
 # ========================
 func _on_restart_button_pressed():
-	GameManager.coins = 0
-	GameManager.status = "playing"
-	get_tree().paused = false
-	get_tree().change_scene_to_file("res://main.tscn")
-	queue_free()
+	if GameManager.is_winner:
+		GameManager.coins = 0
+		GameManager.status = "playing"
+		get_tree().paused = false
+		get_tree().change_scene_to_file("res://main.tscn")
+		queue_free()
+	else:
+		# We just quit the game. The web browser is watching for this!
+		get_tree().quit()

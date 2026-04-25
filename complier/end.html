@@ -68,13 +68,18 @@
     .strip-item:last-child{border-right:none}
     .strip-val{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:900;color:var(--white)}
     .strip-lbl{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+
+    /* Redirect countdown bar */
+    .redirect-bar-wrap{margin-top:28px;animation:fadeIn .6s 1.2s both}
+    .redirect-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+    .redirect-bar-track{width:320px;height:3px;background:var(--border);border-radius:2px;margin:0 auto}
+    .redirect-bar-fill{height:3px;background:linear-gradient(90deg,#40d9a0,#5b8def);border-radius:2px;width:0%;transition:width linear}
   </style>
 </head>
 <body>
 <canvas id="stars"></canvas>
 
 <div id="app">
-  <!-- particle container -->
   <div id="particles"></div>
 
   <div class="end-wrap">
@@ -119,11 +124,11 @@
     </div>
 
     <div class="cta-row">
-      <button class="btn-play" onclick="launchGodot()">
+      <button class="btn-play" id="btn-launch" onclick="launchGodot()">
         <span style="font-size:1.3rem">▶</span> LAUNCH THE GAME
       </button>
       <a href="welcome.html" class="btn-again">
-        ↩ Compile Again
+        ↩ Back to Start
       </a>
     </div>
 
@@ -134,34 +139,41 @@
       <div class="strip-item"><div class="strip-val" id="stat-vars">—</div><div class="strip-lbl">Game Vars</div></div>
       <div class="strip-item"><div class="strip-val" style="color:var(--c4)">✓</div><div class="strip-lbl">Compiled</div></div>
     </div>
+
+    <!-- Auto-redirect countdown (shown after Godot closes) -->
+    <div class="redirect-bar-wrap" id="redirect-wrap" style="display:none">
+      <div class="redirect-label" id="redirect-label">Returning to start in 5s…</div>
+      <div class="redirect-bar-track">
+        <div class="redirect-bar-fill" id="redirect-fill"></div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script src="js/compiler.js"></script>
 <script>
-  // ── Name ──
-  const uname = localStorage.getItem('dsl_user_name') || '';
+  // ── Name ──────────────────────────────────────────────────────────────────
+  const uname  = localStorage.getItem('dsl_user_name') || '';
   const nameEl = document.getElementById('end-name');
   if (uname) nameEl.textContent = 'NICE WORK, ' + uname.toUpperCase() + ' ✦';
   else nameEl.style.display = 'none';
 
-  // ── Stats from compiled code ──
+  // ── Stats from compiled code ──────────────────────────────────────────────
   const code = getCode();
   if (code) {
     const toks = tokenize(code);
     const {statements} = parse(toks);
     const cfg = codegen(statements);
-    const sections = Object.keys(cfg);
     let keyCount = 0;
-    JSON.stringify(cfg,(k,v)=>{if(k!=='')keyCount++;return v;});
+    JSON.stringify(cfg, (k, v) => { if (k !== '') keyCount++; return v; });
 
-    document.getElementById('stat-tokens').textContent = toks.filter(t=>t.kind!=='EOF').length;
-    document.getElementById('stat-nodes').textContent  = statements.length;
+    document.getElementById('stat-tokens').textContent   = toks.filter(t => t.kind !== 'EOF').length;
+    document.getElementById('stat-nodes').textContent    = statements.length;
     document.getElementById('stat-sections').textContent = keyCount;
-    document.getElementById('stat-vars').textContent   = statements.filter(s=>s.type==='set_var').length;
+    document.getElementById('stat-vars').textContent     = statements.filter(s => s.type === 'set_var').length;
   }
 
-  // ── Confetti particles ──
+  // ── Confetti particles ────────────────────────────────────────────────────
   function spawnParticles() {
     const colors = ['#40d9a0','#5b8def','#e25b8e','#f0a040','#a07ee8','#ffd700','#e0e6ff'];
     const container = document.getElementById('particles');
@@ -169,10 +181,9 @@
       setTimeout(() => {
         const p = document.createElement('div');
         p.className = 'particle';
-        const size = Math.random()*8+4;
+        const size = Math.random() * 8 + 4;
         p.style.cssText = `
-          left:${Math.random()*100}vw;
-          bottom:-10px;
+          left:${Math.random()*100}vw;bottom:-10px;
           width:${size}px;height:${size}px;
           background:${colors[Math.floor(Math.random()*colors.length)]};
           opacity:${Math.random()*.8+.2};
@@ -188,10 +199,36 @@
   setTimeout(spawnParticles, 600);
   setTimeout(spawnParticles, 3000);
 
-  // ── Launch Godot ──
+  // ── Countdown + redirect to welcome.html ─────────────────────────────────
+  function startReturnCountdown(seconds = 5) {
+    const wrap  = document.getElementById('redirect-wrap');
+    const label = document.getElementById('redirect-label');
+    const fill  = document.getElementById('redirect-fill');
+    wrap.style.display = 'block';
+
+    let remaining = seconds;
+    // Trigger CSS transition on next frame
+    requestAnimationFrame(() => {
+      fill.style.transitionDuration = seconds + 's';
+      fill.style.width = '100%';
+    });
+
+    const tick = setInterval(() => {
+      remaining--;
+      label.textContent = `Returning to start in ${remaining}s…`;
+      if (remaining <= 0) {
+        clearInterval(tick);
+        window.location.href = 'welcome.html';
+      }
+    }, 1000);
+  }
+
+  // ── Launch Godot ──────────────────────────────────────────────────────────
+  let statusInterval = null;
+
   function launchGodot() {
-    const btn = document.querySelector('.btn-play');
-    btn.innerHTML = '⏳ CONNECTING...';
+    const btn = document.getElementById('btn-launch');
+    btn.innerHTML = '⏳ CONNECTING…';
     btn.style.opacity = '.7';
     btn.style.pointerEvents = 'none';
 
@@ -202,6 +239,26 @@
           btn.style.opacity = '1';
           btn.style.background = 'linear-gradient(135deg,#40d9a0,#40d9a0)';
           spawnParticles();
+
+          // Poll /check-status every second.
+          // When Godot closes the server returns running:false → start countdown.
+          statusInterval = setInterval(() => {
+            fetch('http://localhost:8080/check-status?t=' + Date.now())
+              .then(res => res.json())
+              .then(data => {
+                if (data.running === false) {
+                  clearInterval(statusInterval);
+                  statusInterval = null;
+                  // Update button to show game ended
+                  btn.innerHTML = '🏁 GAME ENDED';
+                  btn.style.background = 'rgba(91,141,239,.2)';
+                  // Start 5-second countdown back to welcome.html
+                  startReturnCountdown(5);
+                }
+              })
+              .catch(() => { /* server not yet ready, keep polling */ });
+          }, 1000);
+
         } else {
           showLaunchFallback();
         }
@@ -210,7 +267,7 @@
   }
 
   function showLaunchFallback() {
-    const btn = document.querySelector('.btn-play');
+    const btn = document.getElementById('btn-launch');
     btn.innerHTML = '⚠ Run compiler first';
     btn.style.opacity = '1';
     btn.style.pointerEvents = 'all';
@@ -223,6 +280,7 @@
       btn.innerHTML = '<span style="font-size:1.3rem">▶</span> LAUNCH THE GAME';
       btn.style = '';
       btn.className = 'btn-play';
+      btn.id = 'btn-launch';
     }, 3000);
   }
 </script>
